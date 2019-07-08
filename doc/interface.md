@@ -45,6 +45,7 @@ answer_string:
         {
             "test_id": <test ID>,
             "test_name": <test name>,
+            "test_type": <test type>
         }
     ]
 }
@@ -67,12 +68,7 @@ answer_string:
             "problem_type": <problem type>,
             "duration": <integer>,
             "content": <problem content>,
-            "options": [
-                {
-                    "option_id": <option ID>,
-                    "content": <option content>,
-                }
-            ],
+            "options": [<option content>],
             "correct_answer": <answer_string>
         }
     ]
@@ -127,7 +123,7 @@ answer_string:
 
 ## /student/practice/
 
-### POST
+### GET
 - Request
 ```
 {
@@ -145,12 +141,7 @@ answer_string:
             "problem_type": <problem type>,
             "duration": <integer>,
             "content": <problem content>,
-            "options": [
-                {
-                    "option_id": <option ID>,
-                    "content": <option content>,
-                }
-            ],
+            "options": [<option content>],
             "correct_answer": <answer_string>
         }
     ]

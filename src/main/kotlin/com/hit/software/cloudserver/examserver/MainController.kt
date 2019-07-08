@@ -13,21 +13,40 @@ import java.util.*
 @RequestMapping("/")
 class MainController {
 
+    // 数据库中表项索引
     private var userTestId = 0
     private var userAnswerId = 0
+
+    // 随机选取N个题目返回
+    private fun selectRandomProblems(Problems:Array<Problem>,N:Int):Array<Problem>{
+
+        // 通过HashSet随机生成N个下标
+        var labelSet = hashSetOf<Int>()
+        while(labelSet.size<N && labelSet.size<Problems.size){
+            labelSet.add(Random().nextInt(Problems.size))
+        }
+
+        // 返回下标对应的N个题目
+        var ret = arrayOf<Problem>()
+        labelSet.forEach { it -> ret += Problems[it] }
+        return ret
+    }
+
     // 查询数据库类
     @Autowired
     var mJdbcTemplate = JdbcTemplate()
 
+    // 登录页面
     @RequestMapping("/")
     fun firstMethod():String{
         return "index"
     }
 
+    // 安卓端登录
     @ResponseBody
     @PostMapping("/student/login")
     fun loginMethod(@RequestBody login:Login):String{
-        println(login.username+login.userpassword)
+
         // 处理数据
         var hasResult = false
         val sql = "select * from user_info where user_name='${login.username}' and user_password='${login.userpassword}';"
@@ -42,35 +61,37 @@ class MainController {
         }
     }
 
+    // 安卓端获取试卷列表
     @ResponseBody
     @GetMapping("/student/test")
     fun returnTests():String{
-        var tests = arrayOf<TestName>()
+        var tests = arrayOf<Test>()
         val nowTime:String = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())
-        val sql = "select id,test_name from tests where start_time<'$nowTime' and end_time>'$nowTime';"
+        val sql = "select id,test_name,test_type from tests where start_time<'$nowTime' and end_time>'$nowTime';"
         mJdbcTemplate.query(sql) {
-                tests += TestName(it.getInt("id"),it.getString("test_name"))
+                tests += Test(it.getInt("id"),it.getString("test_name"),it.getString("test_type"))
             }
 
         return "{\"tests\":${Gson().toJson(tests)}}"
     }
 
+    // 安卓端获取指定试卷
     @ResponseBody
     @PostMapping("/student/test")
-    fun returnProblems(@RequestBody test_id:Int):String{
+    fun returnProblems(@RequestBody test:Test):String{
 
         // 获取测试中的问题
         var problems = arrayOf<Problem>()
-        val sql = "select problems.id problem_id,problems.content problem_content,duration,problem_type from test_problem,problems where test_id = $test_id;"
+        val sql = "select problems.id problem_id,problems.content problem_content,duration,problem_type from test_problem,problems where test_id = ${test.test_id};"
         mJdbcTemplate.query(sql){ it1: ResultSet ->
             val problemId:Int = it1.getInt("problem_id")
 
             // 获取问题的选项和正确答案
             val sql0 = "select id,content,correctness from options where problem_id = ${problemId};"
-            var options = arrayOf<Option>()
+            var options = arrayOf<String>()
             var correctAnswer = ""
             mJdbcTemplate.query(sql0){
-                options += Option(it.getInt("id"),it.getString("content"))
+                options += it.getString("content")
                 if(it.getInt("correctness")==1) {
                     correctAnswer += 'A'.plus(it.row-1) + "-"
                 }
@@ -86,18 +107,20 @@ class MainController {
         return "{\"problems\":${Gson().toJson(problems)}}"
     }
 
+    // 安卓端获取学生成绩
     @ResponseBody
     @GetMapping("/student/record")
     fun returnScores(@RequestBody user:Login):String{
         val sql = "select test_id,score from user_tests where user_name = '${user.username}';"
-        var tests = arrayOf<TestScore>()
+        var tests = arrayOf<Test>()
         mJdbcTemplate.query(sql){
-            tests += TestScore(it.getInt("test_id"),it.getInt("score"))
+            tests += Test(it.getInt("test_id"),Score = it.getInt("score"))
         }
 
         return "{\"tests\":${Gson().toJson(tests)}}"
     }
 
+    // 安卓端提交学生做题情况
     @ResponseBody
     @PostMapping("/student/record")
     fun receiveStats(@RequestBody userStats:Stats):String{
@@ -126,20 +149,21 @@ class MainController {
         return "{\"code\":200}"
     }
 
+    // 安卓端获取练习题目
     @ResponseBody
-    @PostMapping("/student/practice")
-    fun returnPracticeProblems(@RequestBody problem_type:String,number:Int):String{
+    @GetMapping("/student/practice")
+    fun returnPracticeProblems(@RequestBody psf:ProblemSetFeature):String{
         var problems = arrayOf<Problem>()
-        val sql = "select * from problems where problem_type = '$problem_type';"
+        val sql = "select * from problems where problem_type = '${psf.problem_type}';"
         mJdbcTemplate.query(sql){ it1: ResultSet ->
             val problemId:Int = it1.getInt("problem_id")
 
             // 获取问题的选项和正确答案
             val sql0 = "select id,content,correctness from options where problem_id = ${problemId};"
-            var options = arrayOf<Option>()
+            var options = arrayOf<String>()
             var correctAnswer = ""
             mJdbcTemplate.query(sql0){
-                options += Option(it.getInt("id"),it.getString("content"))
+                options += it.getString("content")
                 if(it.getInt("correctness")==1) {
                     correctAnswer += 'A'.plus(it.row-1) + "-"
                 }
@@ -153,8 +177,6 @@ class MainController {
         }
 
         // 随机选择number个问题返回
-        var selectedProblems= arrayOf<Problem>()
-
-        return "{\"problems\":${Gson().toJson(selectedProblems)}}"
+        return "{\"problems\":${Gson().toJson(selectRandomProblems(problems,psf.number))}}"
     }
 }
