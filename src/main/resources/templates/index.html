@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to HIT Test System!</title>
+</head>
+<body>
+    用户名<input type="text" id="name"><br>
+    密码<input type="password" id="password"><br>
+    <input type="button" value="login" onclick="login_check()">
+    <script>
+        function login_check() {
+            var name = $("#name").val();
+            var password = $("#password").val();
+
+            $.ajax({
+
+            })
+        }
+    </script>
+<script th:src="@{jQuery-3.4.1.min.js}"></script>
+</body>
+</html>
