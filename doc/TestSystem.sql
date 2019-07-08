@@ -55,6 +55,7 @@ create table test_problem(
     id integer,
     test_id integer,
     problem_id integer,
+    correct_answer varchar(10),
     primary key(id),
     foreign key(test_id) references tests(id) on delete cascade,
     foreign key(problem_id) references problems(id) on delete cascade
@@ -76,7 +77,7 @@ create table user_answers(
     id integer,
     user_name varchar(20),
     test_problem_id integer,
-    answer varchar(5),
+    answer varchar(10),
     primary key(id),
     foreign key(user_name) references user_info(user_name) on delete cascade,
     foreign key(test_problem_id) references test_problem(id) on delete cascade

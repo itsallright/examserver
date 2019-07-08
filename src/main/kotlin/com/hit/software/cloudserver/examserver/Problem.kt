@@ -1,8 +1,13 @@
 package com.hit.software.cloudserver.examserver
 
-import com.google.gson.annotations.SerializedName
-
-class Problem(Id:Int?,Type:String?,Duration:Int?,Content:String?,Options:Array<String>?,Correct:String?) {
+class Problem(
+        Id:Int?=null,
+        Type:String?=null,
+        Duration:Int?=null,
+        Content:String?=null,
+        Options:Array<String>?=null,
+        Correct:String?=null
+) {
     var problem_id = Id
     var problem_type = Type
     var duration = Duration

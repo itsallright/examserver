@@ -178,6 +178,7 @@ answer_string:
         {
             "test_id": <test ID>,
             "test_name": <test name>,
+            "test_type": <test type>,
             "make_time": <YYYY-MM-DD HH:MM:SS>,
             "start_time": <YYYY-MM-DD HH:MM:SS>,
             "end_time": <YYY-MM-DD HH:MM:SS>,
@@ -200,7 +201,7 @@ answer_string:
 {
     "student_stats":[
         {
-            "student_name": <student's name>,
+            "username": <student's name>,
             "score": <student's score>,
             "student_answers": [
                 {
@@ -221,6 +222,7 @@ answer_string:
     "test_name": <test name>,
     "start_time": <YYYY-MM-DD HH:MM:SS>,
     "end_time": <YYYY-MM-DD HH:MM:SS>,
+    "test_type": <test type>,
     "problems": [<problem ID>]
 }
 ```

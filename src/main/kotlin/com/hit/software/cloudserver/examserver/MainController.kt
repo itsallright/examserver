@@ -45,7 +45,7 @@ class MainController {
     // 安卓端登录
     @ResponseBody
     @PostMapping("/student/login")
-    fun loginMethod(@RequestBody login:Login):String{
+    fun studentLoginMethod(@RequestBody login:Login):String{
 
         // 处理数据
         var hasResult = false
@@ -127,7 +127,7 @@ class MainController {
 
         // 向user_tests表中添加数据
         var sql = "insert into user_tests value($userTestId,'${userStats.username}',${userStats.test_id},${userStats.score});"
-        mJdbcTemplate.query(sql){}
+        mJdbcTemplate.update(sql)
         sql = "select * from user_tests where id=$userTestId and user_name='${userStats.username}' and test_id=${userStats.test_id} and score=${userStats.score};"
         var hasResult = false
         mJdbcTemplate.query(sql){
@@ -142,7 +142,7 @@ class MainController {
         userStats.student_answers?.forEach{
             sql = "select id test_problem_id from test_problem where test_id=${userStats.test_id} and problem_id=${it.problem_id};"
             mJdbcTemplate.query(sql){it0 ->
-                mJdbcTemplate.query("insert into user_answers value(${userAnswerId++},'${userStats.username}',${it0.getInt("test_problem_id")},'${it.student_answer}');"){}
+                mJdbcTemplate.update("insert into user_answers value(${userAnswerId++},'${userStats.username}',${it0.getInt("test_problem_id")},'${it.student_answer}');")
             }
         }
 
@@ -178,5 +178,69 @@ class MainController {
 
         // 随机选择number个问题返回
         return "{\"problems\":${Gson().toJson(selectRandomProblems(problems,psf.number))}}"
+    }
+
+    // 网页端登录
+    @ResponseBody
+    @PostMapping("/teacher/login")
+    fun teacherLoginMethod(@RequestBody login:Login):String{
+        var hasResult = false
+        val sql = "select * from teacher_info where teacher_name='${login.username}' and teacher_password='${login.userpassword}';"
+        mJdbcTemplate.query(sql){
+            hasResult = true
+        }
+
+        return if(hasResult){
+            "{\"code\":200}"
+        }else{
+            "{\"code\":201}"
+        }
+    }
+
+    // 网页端获取试卷列表
+    @ResponseBody
+    @GetMapping("/teacher/test")
+    fun returnTests2():String{
+        var tests = arrayOf<Test>()
+        val sql = "select * from tests;"
+        mJdbcTemplate.query(sql){
+            tests += Test(
+                    it.getInt("id"),
+                    it.getString("test_name"),
+                    it.getString("test_type"),
+                    null,
+                    it.getString("make_time"),
+                    it.getString("start_time"),
+                    it.getString("end_time"),
+                    it.getString("maker")
+            )
+        }
+
+        return "{\"tests\":${Gson().toJson(tests)}}"
+    }
+
+    // 网页端获取某一试卷所有学生做题情况
+    @ResponseBody
+    @PostMapping("/teacher/test")
+    fun returnProblems2(@RequestBody test:Test):String{
+        var studentStats = arrayOf<Stats>()
+        mJdbcTemplate.query("select * from user_tests where id=${test.test_id};"){
+            var studentAnswers = arrayOf<StudentAnswer>()
+            mJdbcTemplate.query("select id, problem_id, correct_answer from test_problem where test_id=${test.test_id};"){it0 ->
+                mJdbcTemplate.query("select answer from user_answers where user_name='${it.getString("user_name")}' and test_problem_id=${it0.getInt("id")};"){it1 ->
+                    studentAnswers += StudentAnswer(it0.getInt("problem_id"),it0.getString("correct_answer"),it1.getString("answer"))
+                }
+            }
+            studentStats += Stats(it.getString("user_name"),null,it.getInt("score"),studentAnswers)
+        }
+
+        return "{\"student_stats\":${Gson().toJson(studentStats)}}"
+    }
+
+    // 网页端增/改试卷
+    @ResponseBody
+    @PutMapping("/teacher/test")
+    fun updateTests(@RequestBody test:Test):String{
+        return ""
     }
 }
