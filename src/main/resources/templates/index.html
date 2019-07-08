@@ -12,9 +12,20 @@
         function login_check() {
             var name = $("#name").val();
             var password = $("#password").val();
-
+            var msg = JSON.stringify({"username":name,"userpassword":password});
             $.ajax({
+                type:"POST",
+                url:"/student/login/",
 
+                data:msg,
+
+                contentType:"application/json",
+                success:function (returnMsg) {
+                    alert(JSON.stringify(returnMsg))
+                    if(returnMsg.code === 200){
+                        window.location.href = "main"
+                    }
+                }
             })
         }
     </script>
