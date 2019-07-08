@@ -222,6 +222,7 @@ answer_string:
     "test_name": <test name>,
     "start_time": <YYYY-MM-DD HH:MM:SS>,
     "end_time": <YYYY-MM-DD HH:MM:SS>,
+    "maker": <teacher name>,
     "test_type": <test type>,
     "problems": [<problem ID>]
 }

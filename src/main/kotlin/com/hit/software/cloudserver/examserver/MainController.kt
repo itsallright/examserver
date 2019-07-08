@@ -16,6 +16,8 @@ class MainController {
     // 数据库中表项索引
     private var userTestId = 0
     private var userAnswerId = 0
+    private var testId = 0
+    private var testProblemId = 0
 
     // 随机选取N个题目返回
     private fun selectRandomProblems(Problems:Array<Problem>,N:Int):Array<Problem>{
@@ -224,12 +226,14 @@ class MainController {
     @PostMapping("/teacher/test")
     fun returnProblems2(@RequestBody test:Test):String{
         var studentStats = arrayOf<Stats>()
+
+        // 查询参加了某一试卷的所有学生
         mJdbcTemplate.query("select * from user_tests where id=${test.test_id};"){
             var studentAnswers = arrayOf<StudentAnswer>()
-            mJdbcTemplate.query("select id, problem_id, correct_answer from test_problem where test_id=${test.test_id};"){it0 ->
-                mJdbcTemplate.query("select answer from user_answers where user_name='${it.getString("user_name")}' and test_problem_id=${it0.getInt("id")};"){it1 ->
-                    studentAnswers += StudentAnswer(it0.getInt("problem_id"),it0.getString("correct_answer"),it1.getString("answer"))
-                }
+
+            // 查询某一学生此次测试的所有答案
+            mJdbcTemplate.query("select problems.id problem_id,correct_answer,answer from test_problem,problems,user_answers where test_id=${test.test_id} and user_name='${it.getString("user_name")}';"){it0 ->
+                studentAnswers += StudentAnswer(it0.getInt("problem_id"),it0.getString("correct_answer"),it0.getString("answer"))
             }
             studentStats += Stats(it.getString("user_name"),null,it.getInt("score"),studentAnswers)
         }
@@ -241,6 +245,13 @@ class MainController {
     @ResponseBody
     @PutMapping("/teacher/test")
     fun updateTests(@RequestBody test:Test):String{
+
+        // 添加试卷
+        mJdbcTemplate.update("insert into tests value($testId,'${test.test_name}','${test.make_time}','${test.start_time}','${test.end_time}','${test.maker}','${test.test_type}');")
+        test.problems?.forEach {
+            println("ha")
+//            mJdbcTemplate.update("insert into test_problem value($testProblemId,${test.test_id},$it,'$correctAnswer');")
+        }
         return ""
     }
 }

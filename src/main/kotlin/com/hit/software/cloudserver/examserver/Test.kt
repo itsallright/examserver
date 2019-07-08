@@ -8,7 +8,8 @@ class Test(
         MakeTime:String?=null,
         StartTime:String?=null,
         EndTime:String?=null,
-        Maker:String?=null
+        Maker:String?=null,
+        Problems:Array<Int>?=null
 ){
     var test_id = Id
     var test_name = Name
@@ -18,4 +19,5 @@ class Test(
     var start_time = StartTime
     var end_time = EndTime
     var maker = Maker
+    var problems = Problems
 }

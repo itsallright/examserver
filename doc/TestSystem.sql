@@ -23,6 +23,7 @@ create table problems(
     problem_type varchar(30),
     maker varchar(20),
     make_time datetime,
+    correct_answer varchar(10),
     primary key(id),
     foreign key(maker) references teacher_info(teacher_name) on delete cascade
 );
@@ -55,7 +56,6 @@ create table test_problem(
     id integer,
     test_id integer,
     problem_id integer,
-    correct_answer varchar(10),
     primary key(id),
     foreign key(test_id) references tests(id) on delete cascade,
     foreign key(problem_id) references problems(id) on delete cascade
