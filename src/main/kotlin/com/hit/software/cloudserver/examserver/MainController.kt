@@ -13,30 +13,33 @@ import java.util.*
 @RequestMapping("/")
 class MainController {
 
-    // 数据库中表项索引
-    private var userTestId = 0
-    private var userAnswerId = 0
-    private var testId = 0
-    private var testProblemId = 0
+    // 查询数据库类
+    @Autowired
+    private var mJdbcTemplate = JdbcTemplate()
 
     // 随机选取N个题目返回
     private fun selectRandomProblems(Problems:Array<Problem>,N:Int):Array<Problem>{
 
         // 通过HashSet随机生成N个下标
-        var labelSet = hashSetOf<Int>()
+        val labelSet = hashSetOf<Int>()
         while(labelSet.size<N && labelSet.size<Problems.size){
             labelSet.add(Random().nextInt(Problems.size))
         }
 
         // 返回下标对应的N个题目
         var ret = arrayOf<Problem>()
-        labelSet.forEach { it -> ret += Problems[it] }
+        labelSet.forEach { ret += Problems[it] }
         return ret
     }
 
-    // 查询数据库类
-    @Autowired
-    var mJdbcTemplate = JdbcTemplate()
+    // 根据选项数组的下标和答案字符串判断某个选项是否正确
+    private fun isCorrectAnswer(Index:Int,Answer:String?):Int{
+        Answer?.split('-')?.forEach{
+            if(Index == it[0].toInt()-'A'.toInt())
+                return 1
+        }
+        return 0
+    }
 
     // 登录页面
     @RequestMapping("/")
@@ -48,8 +51,6 @@ class MainController {
     @ResponseBody
     @PostMapping("/student/login")
     fun studentLoginMethod(@RequestBody login:Login):String{
-
-        // 处理数据
         var hasResult = false
         val sql = "select * from user_info where user_name='${login.username}' and user_password='${login.userpassword}';"
         mJdbcTemplate.query(sql) { hasResult = true }
@@ -83,7 +84,7 @@ class MainController {
             val problemId:Int = it1.getInt("problem_id")
 
             // 获取问题的选项和正确答案
-            val sql0 = "select id,content,correctness from options where problem_id = ${problemId};"
+            val sql0 = "select id,content,correctness from options where problem_id = $problemId;"
             var options = arrayOf<String>()
             var correctAnswer = ""
             mJdbcTemplate.query(sql0){
@@ -123,20 +124,18 @@ class MainController {
     fun receiveStats(@RequestBody userStats:Stats):String{
 
         // 向user_tests表中添加数据
-        var sql = "insert into user_tests value($userTestId,'${userStats.username}',${userStats.test_id},${userStats.score});"
-        mJdbcTemplate.update(sql)
-        sql = "select * from user_tests where id=$userTestId and user_name='${userStats.username}' and test_id=${userStats.test_id} and score=${userStats.score};"
+        mJdbcTemplate.update("insert into user_tests value(default,'${userStats.username}',${userStats.test_id},${userStats.score});")
 
-        var hasResult = false
-        mJdbcTemplate.query(sql) { hasResult = true }
-        if(!hasResult) return "{\"code\":201}"
-        userTestId++
+//        var hasResult = false
+//        mJdbcTemplate.query("select * from user_tests where id=$userTestId and user_name='${userStats.username}' and test_id=${userStats.test_id} and score=${userStats.score};") {
+//            hasResult = true
+//        }
+//        if(!hasResult) return "{\"code\":201}"
 
         // 向user_answers表中添加数据
         userStats.student_answers?.forEach{
-            sql = "select id test_problem_id from test_problem where test_id=${userStats.test_id} and problem_id=${it.problem_id};"
-            mJdbcTemplate.query(sql){it0 ->
-                mJdbcTemplate.update("insert into user_answers value(${userAnswerId++},'${userStats.username}',${it0.getInt("test_problem_id")},'${it.student_answer}');")
+            mJdbcTemplate.query("select id test_problem_id from test_problem where test_id=${userStats.test_id} and problem_id=${it.problem_id};"){it0 ->
+                mJdbcTemplate.update("insert into user_answers value(default,'${userStats.username}',${it0.getInt("test_problem_id")},'${it.student_answer}');")
             }
         }
 
@@ -147,28 +146,23 @@ class MainController {
     @ResponseBody
     @GetMapping("/student/practice")
     fun returnPracticeProblems(@RequestBody psf:ProblemSetFeature):String{
+
+        // 获取某一类型的所有题目
         var problems = arrayOf<Problem>()
-        val sql = "select * from problems where problem_type = '${psf.problem_type}';"
-        mJdbcTemplate.query(sql){ it1: ResultSet ->
-            val problemId:Int = it1.getInt("problem_id")
+        mJdbcTemplate.query("select * from problems where problem_type = '${psf.problem_type}';"){ it1 ->
 
             // 获取问题的选项和正确答案
-            val sql0 = "select id,content,correctness from options where problem_id = ${problemId};"
             var options = arrayOf<String>()
-            var correctAnswer = ""
-            mJdbcTemplate.query(sql0){
+            mJdbcTemplate.query("select id,content,correctness from options where problem_id = ${it1.getInt("id")};"){
                 options += it.getString("content")
-                if(it.getInt("correctness")==1) {
-                    correctAnswer += 'A'.plus(it.row-1) + "-"
-                }
             }
             problems += Problem(
-                    Id = problemId,
+                    Id = it1.getInt("id"),
                     Type = it1.getString("problem_type"),
                     Duration = it1.getInt("duration"),
                     Content = it1.getString("problem_content"),
                     Options = options,
-                    Correct = correctAnswer.removeSuffix("-"))
+                    Correct = it1.getString("correct_answer"))
         }
 
         // 随机选择number个问题返回
@@ -179,8 +173,6 @@ class MainController {
     @ResponseBody
     @PostMapping("/teacher/login")
     fun teacherLoginMethod(@RequestBody login:Login):String{
-
-        println(login.username+" "+login.userpassword)
         var hasResult = false
         val sql = "select * from teacher_info where teacher_name='${login.username}' and teacher_password='${login.userpassword}';"
         mJdbcTemplate.query(sql){ hasResult = true }
@@ -242,23 +234,94 @@ class MainController {
     // 网页端增/改试卷
     @ResponseBody
     @PutMapping("/teacher/test")
-    fun updateTests(@RequestBody test:TestInfo):String{
+    fun updateTest(@RequestBody test:TestInfo):String{
 
         // 查询此试卷是否已经存在
         var hasTest = false
-        mJdbcTemplate.query("select * from tests where id=${test.test_id};") { hasTest = true }
+        mJdbcTemplate.query("select * from tests where test_name=${test.test_name};") { hasTest = true }
 
         // 删除原来试卷
         if(hasTest) mJdbcTemplate.execute("delete from tests where id=${test.test_id};")
 
         // 添加试卷
-        mJdbcTemplate.update("insert into tests value(${testId++},'${test.test_name}','${test.make_time}','${test.start_time}','${test.end_time}','${test.maker}','${test.test_type}');")
+        mJdbcTemplate.update("insert into tests value(default,'${test.test_name}','${test.make_time}','${test.start_time}','${test.end_time}','${test.maker}','${test.test_type}');")
         test.problems?.forEach {
-            mJdbcTemplate.update("insert into test_problem value(${testProblemId++},${test.test_id},$it);")
+            mJdbcTemplate.update("insert into test_problem value(default,${test.test_id},$it);")
         }
 
         return "{\"code\":200}"
     }
 
+    // 网页端删除试卷
+    @ResponseBody
+    @DeleteMapping("/teacher/test")
+    fun deleteTest(@RequestBody test:TestInfo):String{
+        mJdbcTemplate.execute("delete from tests where id=${test.test_id};")
+        return "{\"code\":200}"
+    }
 
+    // 网页端获取题库
+    @ResponseBody
+    @GetMapping("/teacher/problems")
+    fun returnAllProblems():String{
+        var problems = arrayOf<Problem>()
+        mJdbcTemplate.query("select * from problems;"){
+
+            // 获取问题选项
+            var options = arrayOf<String>()
+            mJdbcTemplate.query("select * from options where problem_id=${it.getInt("id")};"){it0->
+                options += it0.getString("content")
+            }
+            problems += Problem(
+                    Id = it.getInt("id"),
+                    Content = it.getString("content"),
+                    Duration = it.getInt("duration"),
+                    Type = it.getString("problem_type"),
+                    Maker = it.getString("maker"),
+                    MakeTime = it.getString("make_time"),
+                    Options = options,
+                    Correct = it.getString("correct_answer")
+            )
+        }
+
+        return "{\"problems\":${Gson().toJson(problems)}}"
+    }
+
+    // 网页端增/改题目
+    @ResponseBody
+    @PostMapping("/teacher/problems")
+    fun updateProblem(problem: Problem):String{
+
+        // 判断题目是否已经存在
+        var hasProblem = false
+        mJdbcTemplate.query("select * from problems where make_time=${problem.make_time};"){
+            hasProblem = true
+        }
+
+        // 删除原题目
+        if(hasProblem) mJdbcTemplate.execute("delete from problems where make_time=${problem.make_time};")
+
+        // 添加题目
+        mJdbcTemplate.update("insert into problems value(default,'${problem.content}',${problem.duration},'${problem.problem_type}','${problem.maker}','${problem.make_time}','${problem.correct_answer}');")
+
+        // 获取problem ID
+        var problemId = 0
+        mJdbcTemplate.query("select LAST_INSERT_ID() id;"){
+            problemId = it.getInt("id")
+        }
+
+        // 添加选项
+        problem.options?.forEachIndexed { index, content ->
+            mJdbcTemplate.update("insert into options value(default,${problemId+1},'$content',${isCorrectAnswer(index,problem.correct_answer)});")
+        }
+        return "{\"code\":200}"
+    }
+
+    // 网页端删除题目
+    @ResponseBody
+    @DeleteMapping("/teacher/problems")
+    fun deleteProblem(problem:Problem):String{
+        mJdbcTemplate.execute("delete from problems where id=${problem.problem_id};")
+        return "{\"code\":200}"
+    }
 }

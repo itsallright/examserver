@@ -3,25 +3,25 @@ use TestData
 
 -- 学生信息
 create table user_info(
-    user_name varchar(20),
-    user_password varchar(15) not null,
+    user_name varchar(30),
+    user_password varchar(20) not null,
     primary key(user_name)
 );
 
 -- 教师信息
 create table teacher_info(
-    teacher_name varchar(20),
-    teacher_password varchar(15) not null,
+    teacher_name varchar(30),
+    teacher_password varchar(20) not null,
     primary key(teacher_name)
 );
 
 -- 题目
 create table problems(
-    id integer,
+    id integer auto_increment,
     content text,
     duration integer,
     problem_type varchar(30),
-    maker varchar(20),
+    maker varchar(30),
     make_time datetime,
     correct_answer varchar(10),
     primary key(id),
@@ -30,7 +30,7 @@ create table problems(
 
 -- 选项
 create table options(
-    id integer,
+    id integer auto_increment,
     problem_id integer,
     content text,
     correctness boolean,
@@ -40,12 +40,12 @@ create table options(
 
 -- 试卷
 create table tests(
-    id integer,
-    test_name varchar(60),
+    id integer auto_increment,
+    test_name varchar(90),
     make_time datetime,
     start_time datetime,
     end_time datetime,
-    maker varchar(20),
+    maker varchar(30),
     test_type varchar(30),
     primary key(id),
     foreign key(maker) references teacher_info(teacher_name) on delete cascade
@@ -53,7 +53,7 @@ create table tests(
 
 -- 试卷&题目关联表
 create table test_problem(
-    id integer,
+    id integer auto_increment,
     test_id integer,
     problem_id integer,
     primary key(id),
@@ -63,8 +63,8 @@ create table test_problem(
 
 -- 用户&测试关联表
 create table user_tests(
-    id integer,
-    user_name varchar(20),
+    id integer auto_increment,
+    user_name varchar(30),
     test_id integer,
     score integer,
     primary key(id),
@@ -74,8 +74,8 @@ create table user_tests(
 
 -- 用户做题情况
 create table user_answers(
-    id integer,
-    user_name varchar(20),
+    id integer auto_increment,
+    user_name varchar(30),
     test_problem_id integer,
     answer varchar(10),
     primary key(id),

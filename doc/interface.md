@@ -279,6 +279,7 @@ answer_string:
     "duration": <problem duration>,
     "problem_type": <problem type>,
     "maker": <teacher's name>,
+    "make_time": <problem make time>,
     "options": [<option content>],
     "correct_answer": <answer_string>
 }
