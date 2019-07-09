@@ -52,26 +52,20 @@ class MainController {
         // 处理数据
         var hasResult = false
         val sql = "select * from user_info where user_name='${login.username}' and user_password='${login.userpassword}';"
-        mJdbcTemplate.query(sql) {
-            hasResult = true
-        }
+        mJdbcTemplate.query(sql) { hasResult = true }
 
-        return if(hasResult){
-            "{\"code\":200}"
-        }else{
-            "{\"code\":201}"
-        }
+        return if(hasResult) "{\"code\":200}" else "{\"code\":201}"
     }
 
     // 安卓端获取试卷列表
     @ResponseBody
     @GetMapping("/student/test")
     fun returnTests():String{
-        var tests = arrayOf<Test>()
+        var tests = arrayOf<TestInfo>()
         val nowTime:String = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())
         val sql = "select id,test_name,test_type from tests where start_time<'$nowTime' and end_time>'$nowTime';"
         mJdbcTemplate.query(sql) {
-                tests += Test(it.getInt("id"),it.getString("test_name"),it.getString("test_type"))
+                tests += TestInfo(it.getInt("id"),it.getString("test_name"),it.getString("test_type"))
             }
 
         return "{\"tests\":${Gson().toJson(tests)}}"
@@ -80,7 +74,7 @@ class MainController {
     // 安卓端获取指定试卷
     @ResponseBody
     @PostMapping("/student/test")
-    fun returnProblems(@RequestBody test:Test):String{
+    fun returnProblems(@RequestBody test:TestInfo):String{
 
         // 获取测试中的问题
         var problems = arrayOf<Problem>()
@@ -98,12 +92,13 @@ class MainController {
                     correctAnswer += 'A'.plus(it.row-1) + "-"
                 }
             }
-            problems += Problem(problemId,
-                    it1.getString("problem_type"),
-                    it1.getInt("duration"),
-                    it1.getString("problem_content"),
-                    options,
-                    correctAnswer.removeSuffix("-"))
+            problems += Problem(
+                    Id = problemId,
+                    Type = it1.getString("problem_type"),
+                    Duration = it1.getInt("duration"),
+                    Content = it1.getString("problem_content"),
+                    Options = options,
+                    Correct = correctAnswer.removeSuffix("-"))
         }
 
         return "{\"problems\":${Gson().toJson(problems)}}"
@@ -114,9 +109,9 @@ class MainController {
     @GetMapping("/student/record")
     fun returnScores(@RequestBody user:Login):String{
         val sql = "select test_id,score from user_tests where user_name = '${user.username}';"
-        var tests = arrayOf<Test>()
+        var tests = arrayOf<TestInfo>()
         mJdbcTemplate.query(sql){
-            tests += Test(it.getInt("test_id"),Score = it.getInt("score"))
+            tests += TestInfo(it.getInt("test_id"),Score = it.getInt("score"))
         }
 
         return "{\"tests\":${Gson().toJson(tests)}}"
@@ -131,13 +126,10 @@ class MainController {
         var sql = "insert into user_tests value($userTestId,'${userStats.username}',${userStats.test_id},${userStats.score});"
         mJdbcTemplate.update(sql)
         sql = "select * from user_tests where id=$userTestId and user_name='${userStats.username}' and test_id=${userStats.test_id} and score=${userStats.score};"
+
         var hasResult = false
-        mJdbcTemplate.query(sql){
-            hasResult = true
-        }
-        if(!hasResult) {
-            return "{\"code\":201}"
-        }
+        mJdbcTemplate.query(sql) { hasResult = true }
+        if(!hasResult) return "{\"code\":201}"
         userTestId++
 
         // 向user_answers表中添加数据
@@ -170,12 +162,13 @@ class MainController {
                     correctAnswer += 'A'.plus(it.row-1) + "-"
                 }
             }
-            problems += Problem(problemId,
-                    it1.getString("problem_type"),
-                    it1.getInt("duration"),
-                    it1.getString("problem_content"),
-                    options,
-                    correctAnswer.removeSuffix("-"))
+            problems += Problem(
+                    Id = problemId,
+                    Type = it1.getString("problem_type"),
+                    Duration = it1.getInt("duration"),
+                    Content = it1.getString("problem_content"),
+                    Options = options,
+                    Correct = correctAnswer.removeSuffix("-"))
         }
 
         // 随机选择number个问题返回
@@ -186,35 +179,31 @@ class MainController {
     @ResponseBody
     @PostMapping("/teacher/login")
     fun teacherLoginMethod(@RequestBody login:Login):String{
+
+        println(login.username+" "+login.userpassword)
         var hasResult = false
         val sql = "select * from teacher_info where teacher_name='${login.username}' and teacher_password='${login.userpassword}';"
-        mJdbcTemplate.query(sql){
-            hasResult = true
-        }
+        mJdbcTemplate.query(sql){ hasResult = true }
 
-        return if(hasResult){
-            "{\"code\":200}"
-        }else{
-            "{\"code\":201}"
-        }
+        return if(hasResult) "{\"code\":200}" else "{\"code\":201}"
     }
 
     // 网页端获取试卷列表
     @ResponseBody
     @GetMapping("/teacher/test")
     fun returnTests2():String{
-        var tests = arrayOf<Test>()
+        var tests = arrayOf<TestInfo>()
         val sql = "select * from tests;"
         mJdbcTemplate.query(sql){
-            tests += Test(
-                    it.getInt("id"),
-                    it.getString("test_name"),
-                    it.getString("test_type"),
-                    null,
-                    it.getString("make_time"),
-                    it.getString("start_time"),
-                    it.getString("end_time"),
-                    it.getString("maker")
+            tests += TestInfo(
+                    Id = it.getInt("id"),
+                    Name = it.getString("test_name"),
+                    Type = it.getString("test_type"),
+                    Score = null,
+                    MakeTime = it.getString("make_time"),
+                    StartTime = it.getString("start_time"),
+                    EndTime = it.getString("end_time"),
+                    Maker = it.getString("maker")
             )
         }
 
@@ -224,18 +213,27 @@ class MainController {
     // 网页端获取某一试卷所有学生做题情况
     @ResponseBody
     @PostMapping("/teacher/test")
-    fun returnProblems2(@RequestBody test:Test):String{
-        var studentStats = arrayOf<Stats>()
+    fun returnProblems2(@RequestBody test:TestInfo):String{
 
         // 查询参加了某一试卷的所有学生
+        var studentStats = arrayOf<Stats>()
         mJdbcTemplate.query("select * from user_tests where id=${test.test_id};"){
-            var studentAnswers = arrayOf<StudentAnswer>()
 
             // 查询某一学生此次测试的所有答案
-            mJdbcTemplate.query("select problems.id problem_id,correct_answer,answer from test_problem,problems,user_answers where test_id=${test.test_id} and user_name='${it.getString("user_name")}';"){it0 ->
-                studentAnswers += StudentAnswer(it0.getInt("problem_id"),it0.getString("correct_answer"),it0.getString("answer"))
+            var studentAnswers = arrayOf<StudentAnswer>()
+            mJdbcTemplate.query("select problem_id,correct_answer,answer from test_problem,problems,user_answers where test_id=${test.test_id} and user_name='${it.getString("user_name")}';"){it0 ->
+                studentAnswers += StudentAnswer(
+                        Id = it0.getInt("problem_id"),
+                        CorrectAnswer = it0.getString("correct_answer"),
+                        studentAnswer = it0.getString("answer")
+                )
             }
-            studentStats += Stats(it.getString("user_name"),null,it.getInt("score"),studentAnswers)
+            studentStats += Stats(
+                    Name = it.getString("user_name"),
+                    Id = null,
+                    Score = it.getInt("score"),
+                    StudentAnswers = studentAnswers
+            )
         }
 
         return "{\"student_stats\":${Gson().toJson(studentStats)}}"
@@ -244,14 +242,23 @@ class MainController {
     // 网页端增/改试卷
     @ResponseBody
     @PutMapping("/teacher/test")
-    fun updateTests(@RequestBody test:Test):String{
+    fun updateTests(@RequestBody test:TestInfo):String{
+
+        // 查询此试卷是否已经存在
+        var hasTest = false
+        mJdbcTemplate.query("select * from tests where id=${test.test_id};") { hasTest = true }
+
+        // 删除原来试卷
+        if(hasTest) mJdbcTemplate.execute("delete from tests where id=${test.test_id};")
 
         // 添加试卷
-        mJdbcTemplate.update("insert into tests value($testId,'${test.test_name}','${test.make_time}','${test.start_time}','${test.end_time}','${test.maker}','${test.test_type}');")
+        mJdbcTemplate.update("insert into tests value(${testId++},'${test.test_name}','${test.make_time}','${test.start_time}','${test.end_time}','${test.maker}','${test.test_type}');")
         test.problems?.forEach {
-            println("ha")
-//            mJdbcTemplate.update("insert into test_problem value($testProblemId,${test.test_id},$it,'$correctAnswer');")
+            mJdbcTemplate.update("insert into test_problem value(${testProblemId++},${test.test_id},$it);")
         }
-        return ""
+
+        return "{\"code\":200}"
     }
+
+
 }

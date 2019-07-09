@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>登录界面</title>
+</head>
+<body text-align:center>
+
+
+<style type="text/css">
+
+body {
+	background-size: 100% auto;
+	/*background-image: url(img/backgroud1.jpg);*/
+	background-repeat:no-repeat;
+	background-position:center top;
+	background-color:#e6e6e6;
+}
+
+#prog {
+	font-size: 55px;
+
+	font-family: fangsong;
+}
+
+#div1 {
+	margin:0 auto;
+	/*border: black 1px solid;*/
+	/*height: 100px;*/
+	width:710px;
+	margin-top: 100px;
+}
+
+#div2 {
+	margin:0 auto;
+	/*border: blue 5px solid;*/
+	width: 300px;
+	padding-top: 220px;
+}
+
+#div3 {
+	margin:0 auto;
+	width: 200px;
+	margin-top: 10px;
+}
+.input_box {
+	font-size: 20px;
+	font-family: fangsong;
+}
+</style>
+
+<!-- the first div consists of two img label and one prograh label, at the same time, 
+two img label make up a child div, and the prograh label is the other child div-->
+<div id="div1" class="center_div">
+	<!-- two img -->
+	<div id="Img" style="width: 350px; float: left; padding: 0; margin-right: 10px">
+		<!-- school badge -->
+		<img src="img/school_badge.png" width="86" height="83">
+		<!-- shcool name Chinese/English -->
+		<!-- <img src="img/school_badge.png" alt="HIT" width="86" height="83"> -->
+		<img src="img/school_name.png" width="258" height="91">
+	</div>
+	<!-- one prograh -->
+	<div id="prog" style="width: 350px; float: left;">
+		<p style="margin:15px">题 库 系 统</p>
+		<!-- <button type="button" onclick="test()">this is a button</button> -->
+		<!-- <button type="button" onclick="getHeight('Img')">click me get my height</button> -->
+	</div>
+</div>
+
+<!-- three input label(for user_id, password, checkword) for student login the system-->
+<div id="div2" class="center_div">
+	<!-- the width of input label is 161px, it has been detected -->
+	<div class="input_box" >用户名: <input id="username" type="text" name="username" placeholder="请输入用户名"></div> 
+	<br>
+	<div class="input_box">密　码: <input id="userpassword" type="password" name="password" placeholder="请输入密码"></div>
+	<br>
+	<div class="input_box">验证码: <input type="text" id="input_checkword" name="checkword" placeholder="请输入验证码" style="width: 100px">
+	<!-- <input type="button" name="checkword" style="width: 44px"> -->
+ 	<input type = "button" name="checkword" id="vertification" value="验证" onclick="CreateCheckword()" style="width: 46px">
+ 	<!-- <div id="demo">demo</div> -->
+	</div>
+</div>
+<br><br>
+
+<!-- two button label(one for login, the other for signin) -->
+<p id="demo" style="background-color: blue"> u know this is a div</p>
+<div id="div3" class="center_div">
+	<input type="button" style="width: 120px" value="登录" onclick="login()">
+</div>
+<!--  <button id="111" style="width: 30px height:30px" onclick="document.getElementById('111').innerHTML = document.getElementById('test').style.width">click</button> -->
+
+<!-- call javascript/login.js -->
+<script src="../static/login.js"></script>
+<script type="text/javascript">
+	var c = document.getElementById("prog").style.height = document.getElementById("Img").offsetHeight + 'px';
+	document.write(c);
+
+
+	function login() {
+		document.getElementById("demo").innerHTML = "succeed";
+		//用户点击登录按钮后启动该函数
+		//分别获取用户名与其密码
+		var username = document.getElementById("username").value;
+		var userpassword = document.getElementById("userpassword").value;
+		// if (username.value.length == 0) {
+		// 	alert("用户名不能为空！");
+		// }
+		// else if (userpassword.value.length == 0) {
+		// 	alert("密码不能为空");
+		// }
+
+		msg = JSON.stringify({"username":username,"userpassword":userpassword});
+		// 将数据发给服务端进行登录验证
+		$.ajax({
+			type: "POST",
+			contentType:"application/json",
+			data: msg,
+			url: "/teacher/login",
+			success: function(retmsg){
+				alert(JSON.stringify(retmsg));
+				if(retmsg.code===200){alert("you are here");}
+				else{alert("asdfasfasfddsfa");}
+			},
+			error: function() {
+				alert("not");
+			}
+
+		});
+
+	}
+</script>
+
+
+<script th:src="@{jquery-3.4.1.min.js}"></script>
+
+</body>
+
+</html>

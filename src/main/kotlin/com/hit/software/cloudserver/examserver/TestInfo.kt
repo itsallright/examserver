@@ -1,6 +1,6 @@
 package com.hit.software.cloudserver.examserver
 
-class Test(
+class TestInfo(
         Id:Int?,
         Name:String?=null,
         Type:String?=null,
