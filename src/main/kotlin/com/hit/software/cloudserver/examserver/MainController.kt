@@ -44,7 +44,7 @@ class MainController {
     // 登录页面
     @RequestMapping("/")
     fun firstMethod():String{
-        return "index"
+        return "login"
     }
 
     // 安卓端登录
@@ -107,12 +107,12 @@ class MainController {
 
     // 安卓端获取学生成绩
     @ResponseBody
-    @GetMapping("/student/record")
+    @PostMapping("/student/score")
     fun returnScores(@RequestBody user:Login):String{
-        val sql = "select test_id,score from user_tests where user_name = '${user.username}';"
+        val sql = "select distinct test_name,score from user_tests,tests where user_name = '${user.username}';"
         var tests = arrayOf<TestInfo>()
         mJdbcTemplate.query(sql){
-            tests += TestInfo(it.getInt("test_id"),Score = it.getInt("score"))
+            tests += TestInfo(Name = it.getString("test_name"),Score = it.getInt("score"))
         }
 
         return "{\"tests\":${Gson().toJson(tests)}}"
@@ -144,7 +144,7 @@ class MainController {
 
     // 安卓端获取练习题目
     @ResponseBody
-    @GetMapping("/student/practice")
+    @PostMapping("/student/practice")
     fun returnPracticeProblems(@RequestBody psf:ProblemSetFeature):String{
 
         // 获取某一类型的所有题目
@@ -160,7 +160,7 @@ class MainController {
                     Id = it1.getInt("id"),
                     Type = it1.getString("problem_type"),
                     Duration = it1.getInt("duration"),
-                    Content = it1.getString("problem_content"),
+                    Content = it1.getString("content"),
                     Options = options,
                     Correct = it1.getString("correct_answer"))
         }

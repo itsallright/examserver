@@ -75,9 +75,9 @@ answer_string:
 }
 ```
 
-## /student/record/
+## /student/score/
 
-### GET
+### POST
 - Request
 ```
 {
@@ -90,12 +90,14 @@ answer_string:
 {
     "tests": [
         {
-            "test_id": <test ID>,
+            "test_name": <test name>,
             "score": <integer>
         }
     ]
 }
 ```
+
+## /student/record/
 
 ### POST
 - Request
@@ -123,7 +125,7 @@ answer_string:
 
 ## /student/practice/
 
-### GET
+### POST
 - Request
 ```
 {

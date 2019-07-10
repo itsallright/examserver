@@ -1,7 +1,7 @@
 package com.hit.software.cloudserver.examserver
 
 class TestInfo(
-        Id:Int?,
+        Id:Int?=null,
         Name:String?=null,
         Type:String?=null,
         Score:Int?=null,
