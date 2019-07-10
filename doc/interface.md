@@ -170,6 +170,35 @@ answer_string:
 }
 ```
 
+## /teacher/record/
+
+### POST
+- Request
+```
+{
+    "test_id": <test ID>
+}
+```
+
+- Response
+```
+{
+    "student_stats":[
+        {
+            "username": <student's name>,
+            "score": <student's score>,
+            "student_answers": [
+                {
+                    "problem_id": <problem ID>,
+                    "correct_answer": <answer_string>,
+                    "student_answer": <answer_string>
+                }
+            ]
+        }
+    ]
+}
+```
+
 ## /teacher/test/
 
 ### GET
@@ -201,17 +230,14 @@ answer_string:
 - Response
 ```
 {
-    "student_stats":[
+    "problems": [
         {
-            "username": <student's name>,
-            "score": <student's score>,
-            "student_answers": [
-                {
-                    "problem_id": <problem ID>,
-                    "correct_answer": <answer_string>,
-                    "student_answer": <answer_string>
-                }
-            ]
+            "problem_id": <problem ID>,
+            "problem_type": <problem type>,
+            "duration": <integer>,
+            "content": <problem content>,
+            "options": [<option content>],
+            "correct_answer": <answer_string>
         }
     ]
 }
@@ -277,6 +303,7 @@ answer_string:
 - Request
 ```
 {
+    "problem_id": <problem ID(if is a new problem, this is null)>,
     "content": <problem content>,
     "duration": <problem duration>,
     "problem_type": <problem type>,

@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.*
 import java.sql.ResultSet
 import java.text.SimpleDateFormat
 import java.util.*
+import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.RequestMapping
+
+
 
 @Controller
 @RequestMapping("/")
@@ -74,7 +78,7 @@ class MainController {
 
     // 安卓端获取指定试卷
     @ResponseBody
-    @PostMapping("/student/test")
+    @PostMapping(value = ["/student/test","/teacher/test"])
     fun returnProblems(@RequestBody test:TestInfo):String{
 
         // 获取测试中的问题
@@ -180,31 +184,9 @@ class MainController {
         return if(hasResult) "{\"code\":200}" else "{\"code\":201}"
     }
 
-    // 网页端获取试卷列表
-    @ResponseBody
-    @GetMapping("/teacher/test")
-    fun returnTests2():String{
-        var tests = arrayOf<TestInfo>()
-        val sql = "select * from tests;"
-        mJdbcTemplate.query(sql){
-            tests += TestInfo(
-                    Id = it.getInt("id"),
-                    Name = it.getString("test_name"),
-                    Type = it.getString("test_type"),
-                    Score = null,
-                    MakeTime = it.getString("make_time"),
-                    StartTime = it.getString("start_time"),
-                    EndTime = it.getString("end_time"),
-                    Maker = it.getString("maker")
-            )
-        }
-
-        return "{\"tests\":${Gson().toJson(tests)}}"
-    }
-
     // 网页端获取某一试卷所有学生做题情况
     @ResponseBody
-    @PostMapping("/teacher/test")
+    @PostMapping("/teacher/record")
     fun returnProblems2(@RequestBody test:TestInfo):String{
 
         // 查询参加了某一试卷的所有学生
@@ -229,6 +211,28 @@ class MainController {
         }
 
         return "{\"student_stats\":${Gson().toJson(studentStats)}}"
+    }
+
+    // 网页端获取试卷列表
+    @ResponseBody
+    @GetMapping("/teacher/test")
+    fun returnTests2():String{
+        var tests = arrayOf<TestInfo>()
+        val sql = "select * from tests;"
+        mJdbcTemplate.query(sql){
+            tests += TestInfo(
+                    Id = it.getInt("id"),
+                    Name = it.getString("test_name"),
+                    Type = it.getString("test_type"),
+                    Score = null,
+                    MakeTime = it.getString("make_time"),
+                    StartTime = it.getString("start_time"),
+                    EndTime = it.getString("end_time"),
+                    Maker = it.getString("maker")
+            )
+        }
+
+        return "{\"tests\":${Gson().toJson(tests)}}"
     }
 
     // 网页端增/改试卷
@@ -294,12 +298,12 @@ class MainController {
 
         // 判断题目是否已经存在
         var hasProblem = false
-        mJdbcTemplate.query("select * from problems where make_time=${problem.make_time};"){
+        mJdbcTemplate.query("select * from problems where id=${problem.problem_id};"){
             hasProblem = true
         }
 
         // 删除原题目
-        if(hasProblem) mJdbcTemplate.execute("delete from problems where make_time=${problem.make_time};")
+        if(hasProblem) mJdbcTemplate.execute("delete from problems where id=${problem.problem_id};")
 
         // 添加题目
         mJdbcTemplate.update("insert into problems value(default,'${problem.content}',${problem.duration},'${problem.problem_type}','${problem.maker}','${problem.make_time}','${problem.correct_answer}');")
