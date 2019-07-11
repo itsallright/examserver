@@ -38,47 +38,49 @@
         <p><a class="btn btn-lg btn-success" onclick="selectProblems()" role="button">去出试卷</a></p>
       </div>
 
-      <div class="row marketing">
-        <div class="col-lg-6">
-          <h5><i>科目</i></h5>
-          <p><span id="hhh"></span></p>
+<!--      <div id="ps">-->
+
+<!--      </div>-->
+<!--      <div class="row marketing">-->
+<!--        <div class="col-lg-6">-->
+<!--          <h5><i>科目</i></h5>-->
 <!--          name相同则选项互斥，可以用题目id来作为name-->
-          <label><input type="radio" name="radio1" value="0"/>选项1</label>
-          <label><input type="radio" name="radio1" value="3"/>选项2</label>
-          <label><input type="radio" name="radio1" value="1"/>选项3</label>
-          <label><input type="radio" name="radio1" value="1"/>选项4</label>
-          <h5><i>科目</i></h5>
-          <p>这是一个题干</p>
-          <label><input type="radio" name="radio2" value="1"/>选项1</label>
-          <label><input type="radio" name="radio2" value="1"/>选项2</label>
-          <label><input type="radio" name="radio2" value="1"/>选项3</label>
-          <label><input type="radio" name="radio2" value="1"/>选项4</label>
-          <div class="select" id="ccc" style="display: none;"><label><input type="checkbox">加入考卷</label></div>
-          <h5><i>科目</i></h5>
-          <p>这是一个题干</p>
-          <label><input type="radio" name="radio3" value="1" checked="checked" />选项1</label>
-          <label><input type="radio" name="radio3" value="1"/>选项2</label>
-          <label><input type="radio" name="radio3" value="1"/>选项3</label>
-          <label><input type="radio" name="radio3" value="1"/>选项4</label>
-          <h5><i>科目</i></h5>
-          <p>这是一个题干</p>
-          <label><input type="radio" name="radio4" value="1"/>选项1</label>
-          <label><input type="radio" name="radio4" value="1"/>选项2</label>
-          <label><input type="radio" name="radio4" value="1"/>选项3</label>
-          <label><input type="radio" name="radio4" value="1"/>选项4</label>
-          <h5><i>科目</i></h5>
-          <p>这是一个题干</p>
-          <label><input type="radio" name="radio5" value="1"/>选项1</label>
-          <label><input type="radio" name="radio5" value="1"/>选项2</label>
-          <label><input type="radio" name="radio5" value="1"/>选项3</label>
-          <label><input type="radio" name="radio5" value="1"/>选项4</label>
-      </div>
+<!--          <label><input type="radio" name="radio1" value="0"/>选项1</label>-->
+<!--          <label><input type="radio" name="radio1" value="3"/>选项2</label>-->
+<!--          <label><input type="radio" name="radio1" value="1"/>选项3</label>-->
+<!--          <label><input type="radio" name="radio1" value="1"/>选项4</label>-->
+<!--          <h5><i>科目</i></h5>-->
+<!--          <p>这是一个题干</p>-->
+<!--          <label><input type="radio" name="radio2" value="1"/>选项1</label>-->
+<!--          <label><input type="radio" name="radio2" value="1"/>选项2</label>-->
+<!--          <label><input type="radio" name="radio2" value="1"/>选项3</label>-->
+<!--          <label><input type="radio" name="radio2" value="1"/>选项4</label>-->
+<!--          <div class="select" id="ccc" style="display: none;"><label><input type="checkbox">加入考卷</label></div>-->
+<!--          <h5><i>科目</i></h5>-->
+<!--          <p>这是一个题干</p>-->
+<!--          <label><input type="radio" name="radio3" value="1" checked="checked" />选项1</label>-->
+<!--          <label><input type="radio" name="radio3" value="1"/>选项2</label>-->
+<!--          <label><input type="radio" name="radio3" value="1"/>选项3</label>-->
+<!--          <label><input type="radio" name="radio3" value="1"/>选项4</label>-->
+<!--          <h5><i>科目</i></h5>-->
+<!--          <p>这是一个题干</p>-->
+<!--          <label><input type="radio" name="radio4" value="1"/>选项1</label>-->
+<!--          <label><input type="radio" name="radio4" value="1"/>选项2</label>-->
+<!--          <label><input type="radio" name="radio4" value="1"/>选项3</label>-->
+<!--          <label><input type="radio" name="radio4" value="1"/>选项4</label>-->
+<!--          <h5><i>科目</i></h5>-->
+<!--          <p>这是一个题干</p>-->
+<!--          <label><input type="radio" name="radio5" value="1"/>选项1</label>-->
+<!--          <label><input type="radio" name="radio5" value="1"/>选项2</label>-->
+<!--          <label><input type="radio" name="radio5" value="1"/>选项3</label>-->
+<!--          <label><input type="radio" name="radio5" value="1"/>选项4</label>-->
+<!--      </div>-->
 
-      <footer class="footer">
-        <p>&copy; 哈尔滨工业大学题库网</p>
-      </footer>
+<!--      <footer class="footer">-->
+<!--        <p>&copy; 哈尔滨工业大学题库网</p>-->
+<!--      </footer>-->
 
-    </div> <!-- /container -->
+<!--    </div> &lt;!&ndash; /container &ndash;&gt;-->
 
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
@@ -89,12 +91,62 @@
       $.ajax({
         url:"/teacher/problems",
         type:"GET",
-        success:function(data){
-          var obj = JSON.parse(data);
-          document.getElementById("hhh").innerHTML = obj.problems[0].content;
-          alert(JSON.stringify(obj));
-        }
-      });
+        contentType:'application/json',
+        success:function(retData) {
+          var obj = JSON.parse(retData);
+          // var problems = obj.problems;
+          // var i;
+          // for(i = 0;i<problems.length;i++){
+          //   problem = problems[i];
+          //   document.getElementById('ps').innerHTML += "<span id=\'"+problem.problem_id.toString()+"\'></span><br>"
+          //           +"<span id=\'content"+problem.problem_id.toString()+"\'></span><br>"
+          //           +"<span id=\'optionA"+problem.problem_id.toString()+"\'></span><br>"
+          //           +"<span id=\'optionB"+problem.problem_id.toString()+"\'></span><br>"
+          //           +"<span id=\'optionC"+problem.problem_id.toString()+"\'></span><br>"
+          //           +"<span id=\'optionD"+problem.problem_id.toString()+"\'></span><br>"
+          //           +"<span id=\'correct"+problem.problem_id.toString()+"\'></span><br><br><br>";
+          //
+          //
+          //
+          //   document.getElementById(problem.problem_id.toString()).innerHTML = problem.problem_id;
+          //   document.getElementById('content'+problem.problem_id.toString()).innerHTML = problem.content;
+          //   document.getElementById('optionA'+problem.problem_id.toString()).innerHTML = problem.options[0];
+          //   document.getElementById('optionB'+problem.problem_id.toString()).innerHTML = problem.options[1];
+          //   document.getElementById('optionC'+problem.problem_id.toString()).innerHTML = problem.options[2];
+          //   document.getElementById('optionD'+problem.problem_id.toString()).innerHTML = problem.options[3];
+          //   document.getElementById('correct'+problem.problem_id.toString()).innerHTML = problem.correct_answer;
+          // }
+
+          // for(var i=1;i<=obj.problems.length;i++){
+          //   // var i = obj.problems[j];
+          //   // var problemId = "problem" + i.p.toString();
+          //   // var problems = document.getElementById(problemId);
+          //   // var problem_type_id = "p" + i.toString();
+          //   // var content_id = i.content;
+          //   // var opt
+          //   problems.innerHTML = "<h5 id=problem_type_id><i>科目</i></h5>" +
+          //           "<p id='content_id'>这是一个题干</p>" +
+          //           <!--       name相同则选项互斥，可以用题目id来作为name-->
+          //
+          //           "<label><input type='radio' name='radio1'/><span id=option_id1>选项1</span></label>" +
+          //           "<label><input type='radio' name='radio1'/><span id=option_id2>选项2</span></label>" +
+          //           "<label><input type='radio' name='radio1'/><span id=option_id3>选项3</span></label>" +
+          //           "<label><input type='radio' name='radio1'/><span id=option_id4>选项4</span></label>" +
+          //           "<div class='select'  style='display: none;'><label><input type='checkbox'>加入考卷</label></div>" +
+          //           "<div class='problem2'></div>";
+          //   document.getElementById(problem_type_id).innerHTML = obj.problems[i - 1].problem_type;
+          //   document.getElementById(content_id).innerHTML = obj.problems[i - 1].content;
+          //   document.getElementById(option_id1).innerHTML = obj.problems[i - 1].options[0];
+          //   document.getElementById(option_id2).innerHTML = obj.problems[i - 1].options[1];
+          //   document.getElementById(option_id3).innerHTML = obj.problems[i - 1].options[2];
+          //   document.getElementById(option_id4).innerHTML = obj.problems[i - 1].options[3];
+          //
+          // }
+
+        },
+        error:function (retMsg) {
+          alert("wrong");
+        }});
       function selectProblems() {
         // alert("shn");
         document.getElementById("ccc").style.display="block";

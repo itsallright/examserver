@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RequestMapping
-
+import org.springframework.web.servlet.ModelAndView
 
 
 @Controller
@@ -64,11 +64,11 @@ class MainController {
     @RequestMapping("/make_paper")
     fun sevenMethod(): String { return "make_paper" }
 
-    @RequestMapping("/problem_pool")
-    fun eightMethod(): String { return "problem_pool" }
+//    @RequestMapping("/problem_pool")
+//    fun eightMethod(): String { return "problem_pool" }
 
-    @RequestMapping("/papers")
-    fun nineMethod(): String { return "papers" }
+//    @RequestMapping("/papers")
+//    fun nineMethod(): String { return "papers" }
 
     // 安卓端登录
     @ResponseBody
@@ -122,7 +122,8 @@ class MainController {
                     Duration = it1.getInt("duration"),
                     Content = it1.getString("problem_content"),
                     Options = options,
-                    Correct = correctAnswer.removeSuffix("-"))
+                    Correct = correctAnswer.removeSuffix("-"),
+                    Maker = null)
         }
 
         return "{\"problems\":${Gson().toJson(problems)}}"
@@ -184,7 +185,8 @@ class MainController {
                     Duration = it1.getInt("duration"),
                     Content = it1.getString("content"),
                     Options = options,
-                    Correct = it1.getString("correct_answer"))
+                    Correct = it1.getString("correct_answer"),
+                    Maker = null)
         }
 
         // 随机选择number个问题返回
@@ -234,7 +236,7 @@ class MainController {
     // 网页端获取试卷列表
     @ResponseBody
     @GetMapping("/teacher/test")
-    fun returnTests2():String{
+    fun returnTests2():ModelAndView{
         var tests = arrayOf<TestInfo>()
         val sql = "select * from tests;"
         mJdbcTemplate.query(sql){
@@ -249,7 +251,7 @@ class MainController {
             )
         }
 
-        return "{\"tests\":${Gson().toJson(tests)}}"
+        return ModelAndView("papers","tests",tests)
     }
 
     // 网页端增/改试卷
@@ -284,7 +286,7 @@ class MainController {
     // 网页端获取题库
     @ResponseBody
     @GetMapping("/teacher/problems")
-    fun returnAllProblems():String{
+    fun returnAllProblems():ModelAndView{
         var problems = arrayOf<Problem>()
         mJdbcTemplate.query("select * from problems;"){
 
@@ -304,13 +306,13 @@ class MainController {
             )
         }
 
-        return "{\"problems\":${Gson().toJson(problems)}}"
+        return ModelAndView("problem_pool","problems",problems)
     }
 
     // 网页端增/改题目
     @ResponseBody
     @PostMapping("/teacher/problems")
-    fun updateProblem(problem: Problem):String{
+    fun updateProblem(@RequestBody problem: Problem):String{
 
         // 判断题目是否已经存在
         var hasProblem = false
@@ -332,7 +334,7 @@ class MainController {
 
         // 添加选项
         problem.options?.forEachIndexed { index, content ->
-            mJdbcTemplate.update("insert into options value(default,${problemId+1},'$content',${isCorrectAnswer(index,problem.correct_answer)});")
+            mJdbcTemplate.update("insert into options value(default,$problemId,'$content',${isCorrectAnswer(index,problem.correct_answer)});")
         }
         return "{\"code\":200}"
     }
@@ -340,7 +342,7 @@ class MainController {
     // 网页端删除题目
     @ResponseBody
     @DeleteMapping("/teacher/problems")
-    fun deleteProblem(problem:Problem):String{
+    fun deleteProblem(@RequestBody problem:Problem):String{
         mJdbcTemplate.execute("delete from problems where id=${problem.problem_id};")
         return "{\"code\":200}"
     }
