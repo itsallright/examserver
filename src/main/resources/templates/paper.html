@@ -112,41 +112,59 @@
 <body>
 <div class="div_all">
     <div class="div_all_top">
+        <!--    试卷头部-->
         <div class="div_all_title">2019年7月8日信息检索模拟测试【出题人：咸博文】</div>
         <div class="div_all_ke">
-            <span style="margin-left: 10%">专业：自然语言处理</span>
+            <span style="margin-left: 10%">科目：数据库</span>
             <span style="margin-left: 20%">时间：2小时</span>
             <span style="margin-left: 20%;color: #d43c3c;">总分：100分</span>
         </div>
         <div class="div_all_ke">
             <span style="margin-left: 5%">姓名(必填)：<input type="text" class="user_name"/></span>
             <span style="margin-left: 5%">班级(选择)：<select class="select_class">
-                <option selected>163105</option>
+                <option selected>1603105</option>
                 <option>1603106</option>
+                <option>1603107</option>
+                <option>1603108</option>
             </select></span>
             <span style="margin-left: 5%">学号(必填)：<input type="text" class="user_student"/></span>
-            <span class="div_span_submit">提交</span>
+            <span class="div_span_submit" onclick="showProblems()">显示</span>
         </div>
-    </div>
-    <!--题-->
-    <div style="margin-top: 170px;">
-        <div style="margin-top:20px;background-color: #999999;height: 50px;width: 80%;margin-left: 10%;line-height: 50px;font-weight: bold;">
-            <span> &nbsp;&nbsp;&nbsp;&nbsp;一、单选题</span>
+        <!--    试卷题目-->
+        <br>
+        <div style="margin-left: 160px">
+        <p id="1">这是一个题干</p>
+        <!--          name相同则选项互斥，可以用题目id来作为name-->
+        <label><input class="1" type="radio" name="radio1" value="0"/>选项1</label>
+        <label><input class="1" type="radio" name="radio1" value="3"/>选项2</label>
+        <label><input class="1" type="radio" name="radio1" value="1"/>选项3</label>
+        <label><input class="1" type="radio" name="radio1" value="1"/>选项4</label>
         </div>
-        <!--选择题-->
-        <div class="div_all_selected">
-
-        </div>
-        <div style="margin-top:20px;background-color: #999999;height: 50px;width: 80%;margin-left: 10%;line-height: 50px;font-weight: bold;">
-            <span>&nbsp;&nbsp;&nbsp;&nbsp;二、多选题</span>
-        </div>
-        <!--多选题-->
-        <div class="div_all_more">
-
-        </div>
-        
     </div>
 </div>
-
+    <script>
+        function showProblems() {
+            var url = "/teacher/problems";
+            var data = JSON.stringify(null);
+            for (var i=0; i<4; i++) {
+                $.ajax({
+                    data:data,
+                    type:"POST",
+                    contentType:"application/json",
+                    url:url,
+                    success:function (retData) {
+                        var retmsg = JSON.parse(retData);
+                        var content = retmsg.content;
+                        document.getElementById("i").innerHTML = content;
+                        for (var j=0; j<4; j++) {
+                            var options = retmsg.options;
+                            //选项
+                        }
+                    }
+                })
+            }
+        }
+    </script>
+    <script src="../static/jquery-3.4.1.min.js"></script>
 </body>
 </html>

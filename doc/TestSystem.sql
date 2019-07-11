@@ -22,7 +22,6 @@ create table problems(
     duration integer,
     problem_type varchar(30),
     maker varchar(30),
-    make_time datetime,
     correct_answer varchar(10),
     primary key(id),
     foreign key(maker) references teacher_info(teacher_name) on delete cascade
@@ -42,7 +41,6 @@ create table options(
 create table tests(
     id integer auto_increment,
     test_name varchar(90),
-    make_time datetime,
     start_time datetime,
     end_time datetime,
     maker varchar(30),

@@ -51,10 +51,10 @@
             
           </ul>
           <form class="navbar-form navbar-left">
-            <div class="form-group">
-              <input type="text" class="form-control" placeholder="输入关键词">
-            </div>
-            <button type="submit" class="btn btn-default" style="margin-right: 5px">查找</button>
+<!--            <div class="form-group">-->
+<!--              <input type="text" class="form-control" placeholder="输入关键词">-->
+<!--            </div>-->
+            <button type="submit" class="btn btn-default" style="margin-right: 5px" onclick="showPapers()">显示试卷</button>
           </form>
         </div><!--/.nav-collapse -->
       </div>
@@ -67,16 +67,16 @@
         <p class="lead">教师可在这里浏览往期已公布的试卷，也可以点击<a href="make_paper.html" target="_blank">这里</a>出一套新试卷。</p>
       </div>
 
-      <h3>这里是一份试卷的名称</h3>
+      <h3 id="1">这里是一份试卷的名称</h3>
       <p>这里是这份试卷的说明</p>
 
-      <h3>这里是一份试卷的名称</h3>
+      <h3 id="2">这里是一份试卷的名称</h3>
       <p>这里是这份试卷的说明</p>
 
-      <h3>这里是一份试卷的名称</h3>
+      <h3 id="3">这里是一份试卷的名称</h3>
       <p>这里是这份试卷的说明</p>
 
-      <h3>这里是一份试卷的名称</h3>
+      <h3 id="4">这里是一份试卷的名称</h3>
       <p>这里是这份试卷的说明</p>
 
       <h3>Browsers, scrolling, and fixed elements</h3>
@@ -89,9 +89,38 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script src="../static/jquery-3.4.1.min.js"></script>
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+    <script>
+      function showPapers() {
+          var data = null;
+          var url = "/teacher/papers";
+          for (var i=0; i<1; i++) {
+              $.ajax({
+                  url:"teacher/test",
+                  // data:data,
+                  // type:"GET",
+                  // contentType:"application/json",
+                  success:function (retData) {
+                      var retmsg = JSON.parse(retData);
+                      var test_id = retmsg.test_id;
+                      var test_name = retmsg.test_name;
+                      document.getElementById("i").innerHTML = test_name;
+                      var start_time = retmsg.start_time;
+                      var end_time = retmsg.end_time;
+                      var maker = retmsg.maker;
+                      document.getElementById("i").innerHTML = "出题人："+maker+"   开始时间："+start_time+"  结束时间："+end_time;
+                  },
+                  error:function (retMsg) {
+                      alert("访问失败");
+                  }
+              });
+          }
+      }
+
+    </script>
   </body>
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -41,12 +41,12 @@
         <h3 class="text-muted">您好，<span id="username"></span>老师</h3>
         <nav>
           <ul class="nav nav-justified">
-            <li class="active"><a href="problem_pool.html">海量题库</a></li>
-            <li><a href="paper.html">往期试卷</a></li>
-            <li><a href="#">制作新题</a></li>
-            <li><a href="#">发布试题</a></li>
-            <li><a href="score.html" target="_blank">查看成绩</a></li>
-            <li><a href="contact_us.html" target="_blank">联系我们</a></li>
+            <li class="active"><a href="problem_pool">海量题库</a></li>
+            <li><a href="papers">往期试卷</a></li>
+            <li><a href="create_newproblem">制作新题</a></li>
+            <li><a href="make_paper">发布试题</a></li>
+            <li><a href="score" target="_blank">查看成绩</a></li>
+            <li><a href="contact_us" target="_blank">联系我们</a></li>
           </ul>
         </nav>
       </div>
@@ -80,18 +80,59 @@
 
       <!-- Site footer -->
       <footer class="footer">
-        <p>&copy; 2016 Company, Inc.</p>
+        <p>&copy; Harbin Institute of Technology.</p>
       </footer>
 
     </div> <!-- /container -->
 
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../static/home.js">
-    </script>
+    <script src="../static/home.js"></script>
+    <script src="../static/jquery-3.4.1.min.js"></script>
     <script type="text/javascript">
+      function sendRequest(url, flag) {
+        //flag用于标记是哪种请求
 
+        //发送数据
+        $.Ajax({
+          url: url,
+          // 在主页请求一个新的界面不需要发送数据给服务端
+          // data: JSON.stringify(data),
+          // contentType: "application/json",
+          success: function(retData) {
+            processData(retData, flag);
+          },
+          error: function (retData) {
+            alert("exit an error!");
+          }
+        })
+      }
+
+      function processData(retData, flag) {
+        //登录时flag为1，是访问题库
+        //服务端需要返回若干题干，选项以及正确选项
+        if (flag === 1) {
+          if (resData.code === "200") {
+            //打开新的界面
+            window.location.href = retData.location;
+          }
+          else {
+            // do something
+            alert("访问失败")
+          }
+        }
+        //验证用户名是否存在时，flag为2
+        if (flag === 2 ) {
+          if (resData.code === "200") {
+            alert("用户名输入正确");
+          }
+          else {
+            alert("无此用户");
+          }
+        }
+      }
     </script>
+
     <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
   </body>
 </html>

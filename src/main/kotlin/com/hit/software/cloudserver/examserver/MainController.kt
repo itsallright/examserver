@@ -47,9 +47,28 @@ class MainController {
 
     // 登录页面
     @RequestMapping("/")
-    fun firstMethod():String{
-        return "login"
-    }
+    fun firstMethod():String{ return "login" }
+
+    @RequestMapping("/home")
+    fun secondMethod(): String { return "home" }
+
+    @RequestMapping("/create_newproblem")
+    fun forthMethod(): String { return "create_newproblem" }
+
+    @RequestMapping("/score")
+    fun fifthMethod(): String { return "score" }
+
+    @RequestMapping("/contact_us")
+    fun sixMethod(): String { return "contact_us" }
+
+    @RequestMapping("/make_paper")
+    fun sevenMethod(): String { return "make_paper" }
+
+    @RequestMapping("/problem_pool")
+    fun eightMethod(): String { return "problem_pool" }
+
+    @RequestMapping("/papers")
+    fun nineMethod(): String { return "papers" }
 
     // 安卓端登录
     @ResponseBody
@@ -225,7 +244,6 @@ class MainController {
                     Name = it.getString("test_name"),
                     Type = it.getString("test_type"),
                     Score = null,
-                    MakeTime = it.getString("make_time"),
                     StartTime = it.getString("start_time"),
                     EndTime = it.getString("end_time"),
                     Maker = it.getString("maker")
@@ -242,13 +260,13 @@ class MainController {
 
         // 查询此试卷是否已经存在
         var hasTest = false
-        mJdbcTemplate.query("select * from tests where test_name=${test.test_name};") { hasTest = true }
+        mJdbcTemplate.query("select * from tests where id=${test.test_id?:-1};") { hasTest = true }
 
         // 删除原来试卷
         if(hasTest) mJdbcTemplate.execute("delete from tests where id=${test.test_id};")
 
         // 添加试卷
-        mJdbcTemplate.update("insert into tests value(default,'${test.test_name}','${test.make_time}','${test.start_time}','${test.end_time}','${test.maker}','${test.test_type}');")
+        mJdbcTemplate.update("insert into tests value(default,'${test.test_name}','${test.start_time}','${test.end_time}','${test.maker}','${test.test_type}');")
         test.problems?.forEach {
             mJdbcTemplate.update("insert into test_problem value(default,${test.test_id},$it);")
         }
@@ -282,7 +300,6 @@ class MainController {
                     Duration = it.getInt("duration"),
                     Type = it.getString("problem_type"),
                     Maker = it.getString("maker"),
-                    MakeTime = it.getString("make_time"),
                     Options = options,
                     Correct = it.getString("correct_answer")
             )
@@ -298,7 +315,7 @@ class MainController {
 
         // 判断题目是否已经存在
         var hasProblem = false
-        mJdbcTemplate.query("select * from problems where id=${problem.problem_id};"){
+        mJdbcTemplate.query("select * from problems where id=${problem.problem_id?:-1};"){
             hasProblem = true
         }
 
@@ -306,7 +323,7 @@ class MainController {
         if(hasProblem) mJdbcTemplate.execute("delete from problems where id=${problem.problem_id};")
 
         // 添加题目
-        mJdbcTemplate.update("insert into problems value(default,'${problem.content}',${problem.duration},'${problem.problem_type}','${problem.maker}','${problem.make_time}','${problem.correct_answer}');")
+        mJdbcTemplate.update("insert into problems value(default,'${problem.content}',${problem.duration},'${problem.problem_type}','${problem.maker}','${problem.correct_answer}');")
 
         // 获取problem ID
         var problemId = 0

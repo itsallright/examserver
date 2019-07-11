@@ -16,12 +16,10 @@
             $.ajax({
                 type:"POST",
                 url:"/student/login/",
-
                 data:msg,
-
                 contentType:"application/json",
                 success:function (returnMsg) {
-                    alert(JSON.stringify(returnMsg))
+                    alert(JSON.stringify(returnMsg));
                     if(returnMsg.code === 200){
                         window.location.href = "main"
                     }

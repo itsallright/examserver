@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -54,36 +54,108 @@
         </div>
       </div>
     </nav>
-    <br><br>
     
     <ul>
-    <li>数据库</li>
-    <li>计算机网络</li>
-    <li>机器学习</li>
+      <br>
     </ul>
     <!-- Begin page content -->
     <div class="container">
       <div class="page-header">
-        <h1>Sticky footer with fixed navbar</h1>
+<!--        <h1>Sticky footer with fixed navbar</h1>-->
+        <p>
+          <label for="problem_content" style="font-size:30px;margin-right:30px;vertical-align:top">题干：</label>
+              <textarea id="problem_content" rows="12" cols="100" name="content" style="font-size:18px"></textarea>
+        </p>
+        <p>
+          <label for="option_A" style="font-size:30px;margin-right:100px;vertical-align:top">A</label>
+          <textarea id="option_A" rows="3" cols="100" name="content" style="font-size:18px"></textarea>
+        </p>
+        <p>
+          <label for="option_B" style="font-size:30px;margin-right:100px;vertical-align:top">B</label>
+          <textarea id="option_B" rows="3" cols="100" name="content" style="font-size:18px"></textarea>
+        </p>
+        <p>
+          <label for="option_C" style="font-size:30px;margin-right:100px;vertical-align:top">C</label>
+          <textarea id="option_C" rows="3" cols="100" name="content" style="font-size:18px"></textarea>
+        </p>
+        <p>
+          <label for="option_D" style="font-size:30px;margin-right:100px;vertical-align:top">D</label>
+          <textarea id="option_D" rows="3" cols="100" name="content" style="font-size:18px"></textarea>
+        </p>
+
+        <label for="pType" style="font-size:26px">题目类型</label>
+        <input id="pType" style="font-size:18px;margin-left: 20px">
+
+        <label for="select_answer" style="font-size: 26px;margin-left: 60px">正确答案</label>
+        <span id="select_answer">
+          <label for="radio_A" style="font-size:30px;margin-left:20px">A</label>
+          <input type="radio" id="radio_A" name="answer" value="A" style="height:20px;width:20px" checked="checked">
+          <label for="radio_B" style="font-size:30px;margin-left:20px">B</label>
+          <input type="radio" id="radio_B" name="answer" value="B" style="height:20px;width:20px">
+          <label for="radio_C" style="font-size:30px;margin-left:20px">C</label>
+          <input type="radio" id="radio_C" name="answer" value="C" style="height:20px;width:20px">
+          <label for="radio_D" style="font-size:30px;margin-left:20px">D</label>
+          <input type="radio" id="radio_D" name="answer" value="D" style="height:20px;width:20px">
+        </span>
+
+        <button type="button" style="font-size:26px;margin-left:130px;vertical-align:top" onclick="sendProblem()">提交题目</button>
       </div>
-      <p class="lead">Pin a fixed-height footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS. A fixed navbar has been added with <code>padding-top: 60px;</code> on the <code>body &gt; .container</code>.</p>
-      <p>Back to <a href="../sticky-footer">the default sticky footer</a> minus the navbar.</p>
+<!--      <p class="lead">Pin a fixed-height footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS. A fixed navbar has been added with <code>padding-top: 60px;</code> on the <code>body &gt; .container</code>.</p>-->
+<!--      <p>Back to <a href="../sticky-footer">the default sticky footer</a> minus the navbar.</p>-->
     </div>
 
-    <footer class="footer">
-      <div class="container">
-        <p class="text-muted">Place sticky footer content here.</p>
-      </div>
-    </footer>
+    <script type="text/javascript">
+      function sendProblem() {
+        var problem_content = $('#problem_content').val();
+        var A_content = $('#option_A').val();
+        var B_content = $('#option_B').val();
+        var C_content = $('#option_C').val();
+        var D_content = $('#option_D').val();
+        var options = [A_content,B_content,C_content,D_content];
+        var problem_type = $('#pType').val();
+        var correct = $("input[name='answer']:checked").val();
+        var ck = document.cookie.split(';');
+        for(var i=0;i<ck.length;i++){
+          var cc = JSON.parse(ck[i]);
+          if(cc.username){
+            var maker = cc.username;
+          }
+        }
+        var sendData = {
+          "content":problem_content,
+          "duration":60,
+          "problem_type":problem_type,
+          "options":options,
+          "maker":maker,
+          "correct_answer":correct
+        };
+        alert(JSON.stringify(sendData));
+        $.ajax({
+          url:"/teacher/problems/",
+          type:"POST",
+          contentType:"application/json",
+          data:JSON.stringify(sendData),
+          success:function(){
+            alert("success!");
+          }
+        })
+      }
+    </script>
+
+<!--    <footer class="footer">-->
+<!--      <div class="container">-->
+<!--        <p class="text-muted">Place sticky footer content here.</p>-->
+<!--      </div>-->
+<!--    </footer>-->
 
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
-    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+    <script src="../static/jquery-3.4.1.min.js"></script>
+<!--    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>-->
+<!--    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+<!--    &lt;!&ndash; IE10 viewport hack for Surface/desktop Windows 8 bug &ndash;&gt;-->
+<!--    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>-->
   </body>
 </html>

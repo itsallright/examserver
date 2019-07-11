@@ -7,8 +7,7 @@ class Problem(
         Content:String?=null,
         Maker:String?=null,
         Options:Array<String>?=null,
-        Correct:String?=null,
-        MakeTime:String?=null
+        Correct:String?=null
 ) {
     var problem_id = Id
     var problem_type = Type
@@ -17,5 +16,4 @@ class Problem(
     var content = Content
     var options = Options
     var correct_answer = Correct
-    var make_time = MakeTime
 }

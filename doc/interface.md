@@ -210,7 +210,6 @@ answer_string:
             "test_id": <test ID>,
             "test_name": <test name>,
             "test_type": <test type>,
-            "make_time": <YYYY-MM-DD HH:MM:SS>,
             "start_time": <YYYY-MM-DD HH:MM:SS>,
             "end_time": <YYY-MM-DD HH:MM:SS>,
             "maker": <teacher's name>
@@ -247,6 +246,7 @@ answer_string:
 - Request
 ```
 {
+    "test_id": <test ID(if new test this is null)>,
     "test_name": <test name>,
     "start_time": <YYYY-MM-DD HH:MM:SS>,
     "end_time": <YYYY-MM-DD HH:MM:SS>,
@@ -291,7 +291,6 @@ answer_string:
             "duration": <problem duration>,
             "problem_type": <problem type>,
             "maker": <problem maker>,
-            "make_time": <problem make time>,
             "options": [<option content>],
             "correct_answer": <answer_string>
         }
@@ -308,7 +307,6 @@ answer_string:
     "duration": <problem duration>,
     "problem_type": <problem type>,
     "maker": <teacher's name>,
-    "make_time": <problem make time>,
     "options": [<option content>],
     "correct_answer": <answer_string>
 }

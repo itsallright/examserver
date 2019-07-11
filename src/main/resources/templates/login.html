@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:text-align="http://java.sun.com/JSP/Page">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+
 	<meta charset="UTF-8">
 	<title>登录界面</title>
 </head>
@@ -89,8 +90,6 @@ two img label make up a child div, and the prograh label is the other child div-
 
 <!-- call javascript/login.js -->
 <!--<script src="http://code.jquery.com/jquery-latest.js"></script>-->
-
-<script src="../static/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">	
 	var c = document.getElementById("prog").style.height = document.getElementById("Img").offsetHeight + 'px';
 	document.write(c);
@@ -116,7 +115,7 @@ two img label make up a child div, and the prograh label is the other child div-
 	function check_user() {
         //当前输入的用户名
 	    var temp_user = document.getElementById("username").value;
-	    var data = {"username":temp_user,"password":""};
+	    var data = JSON.stringify({"username":temp_user,"password":""});
 	    var url = "/teacher/check";
 	    sendRequest(url, data, 2);
     }
@@ -127,14 +126,21 @@ two img label make up a child div, and the prograh label is the other child div-
 	    //发送数据
         $.ajax({
             url: url,
-			type:"POST",
+            type: "POST",
             data: data,
             contentType: "application/json",
             success: function(retData) {
-                processData(retData, flag);
+                //将返回的字符串转换成json对象
+                var retmsg = JSON.parse(retData);
+                // alert(retmsg.code);
+                // alert(retmsg.location);
+                // alert(retmsg.status);
+                processData(retmsg, flag);
+
+                // windows.location.href = retData.location;
             },
-            error: function (retData) {
-                alert("exit an error!");
+            error: function (retMsg) {
+                alert("error!");
             }
         })
     }
@@ -142,18 +148,20 @@ two img label make up a child div, and the prograh label is the other child div-
     function processData(retData, flag) {
 	    //登录时flag为1
 	    if (flag === 1) {
-            if (retData.code === "200") {
+            alert(retData.location);
+            if (retData.status === "success") {
                 //打开新的界面
-                window.location.href = retData.location;
-            }
-            else {
+                window.location.href = "home";
+            } else if (retData.code === 201) {
+                alert("this is 201");
+            } else {
                 // do something
                 alert("访问失败")
             }
         }
 	    //验证用户名是否存在时，flag为2
 	    if (flag === 2 ) {
-            if (retData.code === "200") {
+            if (retData.code === 200) {
                 alert("用户名输入正确");
             }
             else {
@@ -182,7 +190,7 @@ two img label make up a child div, and the prograh label is the other child div-
 		alert(username+userpassword);
 	}
 </script>
-<!--<script src="../static/jquery-3.4.1.min.js"></script>-->
+<script src="../static/jquery-3.4.1.min.js"></script>
 
 </body>
 </html>
