@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" >
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -15,21 +15,6 @@
     <!-- Bootstrap core CSS -->
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <link href="../../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="jumbotron-narrow.css" rel="stylesheet">
-
-    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
   </head>
 
   <body>
@@ -56,7 +41,7 @@
       <div class="row marketing">
         <div class="col-lg-6">
           <h5><i>科目</i></h5>
-          <p>这是一个题干</p>
+          <p><span id="hhh"></span></p>
 <!--          name相同则选项互斥，可以用题目id来作为name-->
           <label><input type="radio" name="radio1" value="0"/>选项1</label>
           <label><input type="radio" name="radio1" value="3"/>选项2</label>
@@ -97,9 +82,19 @@
 
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+<!--    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>-->
       <script src="../static/jquery-3.4.1.min.js"></script>
-    <script>
+    <script type="text/javascript">
+
+      $.ajax({
+        url:"/teacher/problems",
+        type:"GET",
+        success:function(data){
+          var obj = JSON.parse(data);
+          document.getElementById("hhh").innerHTML = obj.problems[0].content;
+          alert(JSON.stringify(obj));
+        }
+      });
       function selectProblems() {
         // alert("shn");
         document.getElementById("ccc").style.display="block";

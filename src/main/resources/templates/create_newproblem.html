@@ -8,28 +8,12 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="../../favicon.ico">
+<!--    <link rel="icon" href="../../favicon.ico">-->
 
     <title>制作新题</title>
 
     <!-- Bootstrap core CSS -->
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <link href="../../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="sticky-footer-navbar.css" rel="stylesheet">
-
-    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
   </head>
 
   <body>
@@ -114,11 +98,11 @@
         var options = [A_content,B_content,C_content,D_content];
         var problem_type = $('#pType').val();
         var correct = $("input[name='answer']:checked").val();
-        var ck = document.cookie.split(';');
-        for(var i=0;i<ck.length;i++){
-          var cc = JSON.parse(ck[i]);
-          if(cc.username){
-            var maker = cc.username;
+        var ca = document.cookie.split(';');
+        for(var i = 0;i<ca.length;i++){
+          var c = ca[i].trim();
+          if (c.indexOf("username=") === 0) {
+            var maker = c.substring(9, c.length);
           }
         }
         var sendData = {

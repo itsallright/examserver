@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:text-align="http://www.w3.org/1999/xhtml">
 <head>
 
 	<meta charset="UTF-8">
@@ -86,10 +86,6 @@ two img label make up a child div, and the prograh label is the other child div-
 <div id="div3" class="center_div">
 	<input type="button" style="width: 120px" value="登录" onclick="login()">
 </div>
-<!--  <button id="111" style="width: 30px height:30px" onclick="document.getElementById('111').innerHTML = document.getElementById('test').style.width">click</button> -->
-
-<!-- call javascript/login.js -->
-<!--<script src="http://code.jquery.com/jquery-latest.js"></script>-->
 <script type="text/javascript">	
 	var c = document.getElementById("prog").style.height = document.getElementById("Img").offsetHeight + 'px';
 	document.write(c);
@@ -132,9 +128,6 @@ two img label make up a child div, and the prograh label is the other child div-
             success: function(retData) {
                 //将返回的字符串转换成json对象
                 var retmsg = JSON.parse(retData);
-                // alert(retmsg.code);
-                // alert(retmsg.location);
-                // alert(retmsg.status);
                 processData(retmsg, flag);
 
                 // windows.location.href = retData.location;
@@ -148,10 +141,11 @@ two img label make up a child div, and the prograh label is the other child div-
     function processData(retData, flag) {
 	    //登录时flag为1
 	    if (flag === 1) {
-            alert(retData.location);
-            if (retData.status === "success") {
-                //打开新的界面
-                window.location.href = "home";
+            if (retData.code === 200) {
+				document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+				document.cookie = "username="+$('#username').val()+";";
+				//打开新的界面
+				window.location.href = "home";
             } else if (retData.code === 201) {
                 alert("this is 201");
             } else {
@@ -187,7 +181,6 @@ two img label make up a child div, and the prograh label is the other child div-
         var url = "/teacher/login/";
 		sendRequest(url,data,1);
 		// 将数据发给服务端进行登录验证
-		alert(username+userpassword);
 	}
 </script>
 <script src="../static/jquery-3.4.1.min.js"></script>

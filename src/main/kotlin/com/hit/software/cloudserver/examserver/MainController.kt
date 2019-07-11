@@ -146,14 +146,13 @@ class MainController {
     @PostMapping("/student/record")
     fun receiveStats(@RequestBody userStats:Stats):String{
 
+        // 检查user_tests表中是否已经提交过成绩
+        var hasScore = false
+        mJdbcTemplate.query("select * from user_tests where user_name='${userStats.username}' and test_id=${userStats.test_id};"){ hasScore = true }
+        if(hasScore) return "{\"code\":201}"
+
         // 向user_tests表中添加数据
         mJdbcTemplate.update("insert into user_tests value(default,'${userStats.username}',${userStats.test_id},${userStats.score});")
-
-//        var hasResult = false
-//        mJdbcTemplate.query("select * from user_tests where id=$userTestId and user_name='${userStats.username}' and test_id=${userStats.test_id} and score=${userStats.score};") {
-//            hasResult = true
-//        }
-//        if(!hasResult) return "{\"code\":201}"
 
         // 向user_answers表中添加数据
         userStats.student_answers?.forEach{

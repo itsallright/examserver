@@ -246,7 +246,7 @@ answer_string:
 - Request
 ```
 {
-    "test_id": <test ID(if new test this is null)>,
+    "test_id": <test ID(if new test this is -1)>,
     "test_name": <test name>,
     "start_time": <YYYY-MM-DD HH:MM:SS>,
     "end_time": <YYYY-MM-DD HH:MM:SS>,
@@ -302,7 +302,7 @@ answer_string:
 - Request
 ```
 {
-    "problem_id": <problem ID(if is a new problem, this is null)>,
+    "problem_id": <problem ID(if is a new problem, this is -1)>,
     "content": <problem content>,
     "duration": <problem duration>,
     "problem_type": <problem type>,

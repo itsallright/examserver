@@ -15,20 +15,7 @@
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <link href="../../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
 
-    <!-- Custom styles for this template -->
-    <link href="justified-nav.css" rel="stylesheet">
-
-    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
   </head>
 
   <body>
@@ -87,14 +74,21 @@
 
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../static/home.js"></script>
     <script src="../static/jquery-3.4.1.min.js"></script>
     <script type="text/javascript">
+      var ca = document.cookie.split(';');
+      for(var i = 0;i<ca.length;i++){
+        var c = ca[i].trim();
+        if (c.indexOf("username=") === 0) {
+          var teacherName = c.substring(9, c.length)
+        }
+      }
+      document.getElementById('username').innerHTML=teacherName;
       function sendRequest(url, flag) {
         //flag用于标记是哪种请求
 
         //发送数据
-        $.Ajax({
+        $.ajax({
           url: url,
           // 在主页请求一个新的界面不需要发送数据给服务端
           // data: JSON.stringify(data),
@@ -133,6 +127,6 @@
       }
     </script>
 
-    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+<!--    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>-->
   </body>
 </html>
