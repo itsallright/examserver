@@ -1,113 +1,97 @@
-
 <!DOCTYPE html>
-<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" >
-  <head>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- The above 2 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
-
-    <!-- Note there is no responsive meta tag here -->
-
-    <link rel="icon" href="../../favicon.ico">
-
     <title>往期试卷</title>
-
     <!-- Bootstrap core CSS -->
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-  </head>
-  <body>
+    <!-- Custom styles for this template -->
+<!--    <link href="non-responsive.css" rel="stylesheet">-->
+</head>
+
+<body>
+<div>
+
 
     <!-- Fixed navbar -->
     <nav class="navbar navbar-default navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <!-- The mobile navbar-toggle button can be safely removed since you do not need it in a non-responsive implementation -->
-          <a class="navbar-brand">the past</a>
-        </div>
-        <!-- Note that the .navbar-collapse and .collapse classes have been removed from the #navbar -->
-        <div id="navbar">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="home.html">主页</a></li>
-            <li><a href="#about">制作新题</a></li>
-            <li><a href="contact_us.html" target="_blank">联系我们</a></li>
-            
-          </ul>
-          <form class="navbar-form navbar-left">
-<!--            <div class="form-group">-->
-<!--              <input type="text" class="form-control" placeholder="输入关键词">-->
-<!--            </div>-->
-            <button type="submit" class="btn btn-default" style="margin-right: 5px" onclick="showPapers()">显示试卷</button>
-          </form>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
-    <div class="container">
+        <div class="container">
+            <div class="navbar-header">
+                <!-- The mobile navbar-toggle button can be safely removed since you do not need it in a non-responsive implementation -->
+                <a class="navbar-brand">the past</a>
+            </div>
+            <!-- Note that the .navbar-collapse and .collapse classes have been removed from the #navbar -->
+            <div id="navbar">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="home">主页</a></li>
+                    <li><a href="#about">制作新题</a></li>
+                    <li><a href="contact_us" target="_blank">联系我们</a></li>
 
-      <div class="page-header">
+                </ul>
+                <form class="navbar-form navbar-left">
+                    <!--            <div class="form-group">-->
+                    <!--              <input type="text" class="form-control" placeholder="输入关键词">-->
+                    <!--            </div>-->
+                </form>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+    <input class="container">
+
+    <div class="page-header">
         <br><br>
         <h1>往期试卷</h1>
-        <p class="lead">教师可在这里浏览往期已公布的试卷，也可以点击<a href="make_paper.html" target="_blank">这里</a>出一套新试卷。</p>
-      </div>
+        <p class="lead">教师可在这里浏览往期已公布的试卷，也可以点击<a href="make_paper" target="_blank">这里</a>出一套新试卷。</p>
+    </div>
 
-        <ul>
-            <li th:each="test:${tests}" th:text="${test.test_name}">小动物 - 此处文本会被覆盖</li>
-        </ul>
-<!--      <h3 id="1">这里是一份试卷的名称</h3>-->
-<!--      <p>这里是这份试卷的说明</p>-->
+    <div th:each="test:${tests}">
 
-<!--      <h3 id="2">这里是一份试卷的名称</h3>-->
-<!--      <p>这里是这份试卷的说明</p>-->
+        <h3 th:text="${test.test_name}"></h3>
+        开始时间：<p th:text="${test.start_time}"></p>
+        结束时间：<p th:text="${test.end_time}"></p>
+        试卷号：<p th:text="${test.test_id}"></p>
+        出题人：<p th:text="${test.maker}"></p>
+        <!--          id: <p th:text="${test.id}"></p>-->
+        <a th:href="@{'/teacher/test_problem?test_id='+${test.test_id}}"><button class="" type="submit">详情</button></a>
+        <a th:href="@{'/teacher/record?test='+${test.test_id}}"><button class="" type="submit">学生答题情况</button></a>
+    </div>
+    <input id="test_id" type="text" placeholder="输入删试卷号"/>
+    <button type="submit" style="margin-left: 100px" onclick="deleteTest()">提交</button>
 
-<!--      <h3 id="3">这里是一份试卷的名称</h3>-->
-<!--      <p>这里是这份试卷的说明</p>-->
+</div> <!-- /container -->
 
-<!--      <h3 id="4">这里是一份试卷的名称</h3>-->
-<!--      <p>这里是这份试卷的说明</p>-->
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script src="../static/jquery-3.4.1.min.js"></script>
+<script>
 
-      <h3>Browsers, scrolling, and fixed elements</h3>
-      <p>Non-responsive layouts highlight a key drawback to fixed elements. <strong class="text-danger">Any fixed component, such as a fixed navbar, will not be scrollable when the viewport becomes narrower than the page content.</strong> In other words, given the non-responsive container width of 970px and a viewport of 800px, you'll potentially hide 170px of content.</p>
-      <p>There is no way around this as it's default browser behavior. The only solution is a responsive layout or using a non-fixed element.</p>
-      <h3>Non-responsive grid system</h3>
-    </div> <!-- /container -->
+    function deleteTest() {
+        var test_id = parseInt($('#test_id').val());
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
-    <script src="../static/jquery-3.4.1.min.js"></script>
-    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
-    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
-    <script>
-      function showPapers() {
-          var data = null;
-          var url = "/teacher/papers";
-          for (var i=0; i<1; i++) {
-              $.ajax({
-                  url:"teacher/test",
-                  // data:data,
-                  // type:"GET",
-                  // contentType:"application/json",
-                  success:function (retData) {
-                      var retmsg = JSON.parse(retData);
-                      var test_id = retmsg.test_id;
-                      var test_name = retmsg.test_name;
-                      document.getElementById("i").innerHTML = test_name;
-                      var start_time = retmsg.start_time;
-                      var end_time = retmsg.end_time;
-                      var maker = retmsg.maker;
-                      document.getElementById("i").innerHTML = "出题人："+maker+"   开始时间："+start_time+"  结束时间："+end_time;
-                  },
-                  error:function (retMsg) {
-                      alert("访问失败");
-                  }
-              });
-          }
-      }
+        data = {
+            "test_id":test_id
+        };
+        // alert(JSON.stringify(data));
+        $.ajax({
+            url:'/teacher/test',
+            data:JSON.stringify(data),
+            type:'DELETE',
+            contentType:'application/json',
+            success: function(retData) {
+                alert("success");
+            },
+            error: function(retMsg) {
+                alert("error");
+            }
+        });
+    }
 
-    </script>
-  </body>
+</script>
+</body>
 </html>

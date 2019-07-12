@@ -1,7 +1,6 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" >
-  <head>
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,169 +14,165 @@
     <!-- Bootstrap core CSS -->
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 
-  </head>
+</head>
 
-  <body>
+<body>
 
-    <div class="container">
-      <div class="header clearfix">
+<div class="container">
+    <div class="header clearfix">
         <nav>
-          <ul class="nav nav-pills pull-right">
-            <li role="presentation" class="active"><a href="home">返回主页</a></li>
-            <li role="presentation"><a href="#">关于</a></li>
-            <li role="presentation"><a href="contact_us" target="_blank">联系我们</a></li>
-          </ul>
+            <ul class="nav nav-pills pull-right">
+                <li role="presentation" class="active"><a href="home">返回主页</a></li>
+                <li role="presentation"><a href="#">关于</a></li>
+                <li role="presentation"><a href="contact_us" target="_blank">联系我们</a></li>
+            </ul>
         </nav>
         <h3 class="text-muted">海量题库</h3>
-      </div>
+    </div>
 
-      <div class="jumbotron">
+    <div class="jumbotron">
         <h3>哈尔滨工业大学题库</h3>
         <p class="lead">教师可为题库增添新题、改动原题、删除试题，亦可选择题目组成试卷。</p>
-        <p><a class="btn btn-lg btn-success" onclick="selectProblems()" target="_blank" role="button">显示题目</a></p>
-        <p><a class="btn btn-lg btn-success" onclick="selectProblems()" role="button">去出试卷</a></p>
-      </div>
-
-<!--      <div id="ps">-->
-
-<!--      </div>-->
-<!--      <div class="row marketing">-->
-<!--        <div class="col-lg-6">-->
-<!--          <h5><i>科目</i></h5>-->
-<!--          name相同则选项互斥，可以用题目id来作为name-->
-<!--          <label><input type="radio" name="radio1" value="0"/>选项1</label>-->
-<!--          <label><input type="radio" name="radio1" value="3"/>选项2</label>-->
-<!--          <label><input type="radio" name="radio1" value="1"/>选项3</label>-->
-<!--          <label><input type="radio" name="radio1" value="1"/>选项4</label>-->
-<!--          <h5><i>科目</i></h5>-->
-<!--          <p>这是一个题干</p>-->
-<!--          <label><input type="radio" name="radio2" value="1"/>选项1</label>-->
-<!--          <label><input type="radio" name="radio2" value="1"/>选项2</label>-->
-<!--          <label><input type="radio" name="radio2" value="1"/>选项3</label>-->
-<!--          <label><input type="radio" name="radio2" value="1"/>选项4</label>-->
-<!--          <div class="select" id="ccc" style="display: none;"><label><input type="checkbox">加入考卷</label></div>-->
-<!--          <h5><i>科目</i></h5>-->
-<!--          <p>这是一个题干</p>-->
-<!--          <label><input type="radio" name="radio3" value="1" checked="checked" />选项1</label>-->
-<!--          <label><input type="radio" name="radio3" value="1"/>选项2</label>-->
-<!--          <label><input type="radio" name="radio3" value="1"/>选项3</label>-->
-<!--          <label><input type="radio" name="radio3" value="1"/>选项4</label>-->
-<!--          <h5><i>科目</i></h5>-->
-<!--          <p>这是一个题干</p>-->
-<!--          <label><input type="radio" name="radio4" value="1"/>选项1</label>-->
-<!--          <label><input type="radio" name="radio4" value="1"/>选项2</label>-->
-<!--          <label><input type="radio" name="radio4" value="1"/>选项3</label>-->
-<!--          <label><input type="radio" name="radio4" value="1"/>选项4</label>-->
-<!--          <h5><i>科目</i></h5>-->
-<!--          <p>这是一个题干</p>-->
-<!--          <label><input type="radio" name="radio5" value="1"/>选项1</label>-->
-<!--          <label><input type="radio" name="radio5" value="1"/>选项2</label>-->
-<!--          <label><input type="radio" name="radio5" value="1"/>选项3</label>-->
-<!--          <label><input type="radio" name="radio5" value="1"/>选项4</label>-->
-<!--      </div>-->
-
-<!--      <footer class="footer">-->
-<!--        <p>&copy; 哈尔滨工业大学题库网</p>-->
-<!--      </footer>-->
-
-<!--    </div> &lt;!&ndash; /container &ndash;&gt;-->
-
-
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-<!--    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>-->
-      <script src="../static/jquery-3.4.1.min.js"></script>
-    <script type="text/javascript">
-
-      $.ajax({
-        url:"/teacher/problems",
-        type:"GET",
-        contentType:'application/json',
-        success:function(retData) {
-          var obj = JSON.parse(retData);
-          // var problems = obj.problems;
-          // var i;
-          // for(i = 0;i<problems.length;i++){
-          //   problem = problems[i];
-          //   document.getElementById('ps').innerHTML += "<span id=\'"+problem.problem_id.toString()+"\'></span><br>"
-          //           +"<span id=\'content"+problem.problem_id.toString()+"\'></span><br>"
-          //           +"<span id=\'optionA"+problem.problem_id.toString()+"\'></span><br>"
-          //           +"<span id=\'optionB"+problem.problem_id.toString()+"\'></span><br>"
-          //           +"<span id=\'optionC"+problem.problem_id.toString()+"\'></span><br>"
-          //           +"<span id=\'optionD"+problem.problem_id.toString()+"\'></span><br>"
-          //           +"<span id=\'correct"+problem.problem_id.toString()+"\'></span><br><br><br>";
-          //
-          //
-          //
-          //   document.getElementById(problem.problem_id.toString()).innerHTML = problem.problem_id;
-          //   document.getElementById('content'+problem.problem_id.toString()).innerHTML = problem.content;
-          //   document.getElementById('optionA'+problem.problem_id.toString()).innerHTML = problem.options[0];
-          //   document.getElementById('optionB'+problem.problem_id.toString()).innerHTML = problem.options[1];
-          //   document.getElementById('optionC'+problem.problem_id.toString()).innerHTML = problem.options[2];
-          //   document.getElementById('optionD'+problem.problem_id.toString()).innerHTML = problem.options[3];
-          //   document.getElementById('correct'+problem.problem_id.toString()).innerHTML = problem.correct_answer;
-          // }
-
-          // for(var i=1;i<=obj.problems.length;i++){
-          //   // var i = obj.problems[j];
-          //   // var problemId = "problem" + i.p.toString();
-          //   // var problems = document.getElementById(problemId);
-          //   // var problem_type_id = "p" + i.toString();
-          //   // var content_id = i.content;
-          //   // var opt
-          //   problems.innerHTML = "<h5 id=problem_type_id><i>科目</i></h5>" +
-          //           "<p id='content_id'>这是一个题干</p>" +
-          //           <!--       name相同则选项互斥，可以用题目id来作为name-->
-          //
-          //           "<label><input type='radio' name='radio1'/><span id=option_id1>选项1</span></label>" +
-          //           "<label><input type='radio' name='radio1'/><span id=option_id2>选项2</span></label>" +
-          //           "<label><input type='radio' name='radio1'/><span id=option_id3>选项3</span></label>" +
-          //           "<label><input type='radio' name='radio1'/><span id=option_id4>选项4</span></label>" +
-          //           "<div class='select'  style='display: none;'><label><input type='checkbox'>加入考卷</label></div>" +
-          //           "<div class='problem2'></div>";
-          //   document.getElementById(problem_type_id).innerHTML = obj.problems[i - 1].problem_type;
-          //   document.getElementById(content_id).innerHTML = obj.problems[i - 1].content;
-          //   document.getElementById(option_id1).innerHTML = obj.problems[i - 1].options[0];
-          //   document.getElementById(option_id2).innerHTML = obj.problems[i - 1].options[1];
-          //   document.getElementById(option_id3).innerHTML = obj.problems[i - 1].options[2];
-          //   document.getElementById(option_id4).innerHTML = obj.problems[i - 1].options[3];
-          //
-          // }
-
-        },
-        error:function (retMsg) {
-          alert("wrong");
-        }});
-      function selectProblems() {
-        // alert("shn");
-        document.getElementById("ccc").style.display="block";
-      }
-
-      function showProblem() {
-        sendRequest()
-
-      }
-
-      function senRequest (url,data,flag) {
-        $.ajax({
-          url:url,
-          data:data,
-          type:"POST",
-          contentType:"application/json",
-          success:function(retData) {
-            var problem_id = retData.problem_id;
-            var content = retData.content;
-            var problem_type = reData.problem.type;
-            var maker =retData.problem_maker;
-            // var make_time = retData.make_time;
-            var options = retData.option;
-            var correct_answer = retData.answer_string;
-          },
-          error:function(retMsg) {
-            //error
-          }
-        })
-      }
-    </script>
+        <p><a class="btn btn-lg btn-success" onclick="showProblems()" href="#dd">删除题目</a></p>
+        <p><a class="btn btn-lg btn-success" onclick="selectProblems()" href="#tt">去出试卷</a></p>
     </div>
-  </body>
+
+    <div th:each="problem:${problems}">
+        <table id="pc">
+            <tr>
+                <th th:text="'题号：'+${problem.problem_id}"></th>
+                <th th:text="'题型：'+${problem.problem_type}"></th>
+                <th th:text="' 题干：'+${problem.content}"></th>
+            </tr>
+            <tr>
+                <td align="right">A</td>
+                <td align="right" id="A" th:text="${problem.options[0]}"></td>
+            </tr>
+
+            <tr>
+                <td align="right">B</td>
+                <td align="right" id="B" th:text="${problem.options[1]}"></td>
+            </tr>
+
+            <tr>
+                <td align="right">C</td>
+                <td align="right" id="C" th:text="${problem.options[2]}"></td>
+            </tr>
+
+            <tr>
+                <td align="right">D</td>
+                <td align="right" id="D" th:text="${problem.options[3]}"></td>
+            </tr>
+
+            <tr>
+                <td th:text="'正确答案： '+${problem.correct_answer}"></td>
+            </tr>
+            <tr>
+                <td th:text="'出题人： '+${problem.maker}"></td>
+            </tr>
+        </table>
+        <br>
+        <br>
+    </div>
+</div>
+<div id = "hidden">
+    输入试卷名称
+    <input id="test_name" type="text"/>
+    输入题型
+    <input id="test_type" type="text" />
+    输入开始时间
+    <input id="start_time" type="text" />
+    输入结束时间
+    <input id="end_time" type="text" />
+    输入题号
+    <input id="problem_id" type="text" />
+
+    <button type="submit" style="margin-left: 100px" onclick="make_paper()">提交</button>
+</div>
+
+<input id="delete_problem_id" type="text" placeholder="输入删除题号">
+<button type="submit" style="margin-left: 100px" onclick="deleteProblem()">提交</button>
+
+<div id="dd"></div>
+<div id="tt"></div>
+
+<script src="../static/jquery-3.4.1.min.js"></script>
+<script type="text/javascript">
+
+
+    function selectProblems() {
+        document.getElementById("hidden").style.display = "block";
+
+    }
+
+    function showProblems() {
+        document.getElementById("hidden").style.display="none";
+    }
+
+    function make_paper() {
+        var test_name = $('#test_name') .val();
+        var test_type = $('#test_type').val();
+        var start_time = $('#start_time').val();
+        var end_time = $('#end_time').val();
+        var problem_id_str = $('#problem_id').val().split(' ');
+        var problem_id_array = [];
+        for (var i=0; i<problem_id_str.length; i++){
+            problem_id_array.push(parseInt(problem_id_str[i]));
+        }
+
+        var ca = document.cookie.split(';');
+        for(var i = 0;i<ca.length;i++){
+            var c = ca[i].trim();
+            if (c.indexOf("username=") === 0) {
+                var maker = c.substring(9, c.length);
+            }
+        }
+        data = {
+            "test_id":-1,
+            "test_name":test_name,
+            "start_time":start_time,
+            "end_time":end_time,
+            "test_type":test_type,
+            "maker":maker,
+            "problems":problem_id_array
+        };
+        alert(JSON.stringify(data));
+        $.ajax({
+            url:'/teacher/test',
+            data:JSON.stringify(data),
+            type:'PUT',
+            contentType:'application/json',
+            success: function(retData) {
+                alert("success");
+            },
+            error: function(retMsg) {
+                alert("error");
+            }
+        })
+    }
+
+    function deleteProblem() {
+        var delete_problem_id = parseInt($('#delete_problem_id').val());
+
+        data = {
+            "problem_id":delete_problem_id
+        };
+        // alert(JSON.stringify(data));
+        $.ajax({
+            url:'/teacher/problems',
+            data:JSON.stringify(data),
+            type:'DELETE',
+            contentType:'application/json',
+            success: function(retData) {
+                alert("success");
+            },
+            error: function(retMsg) {
+                alert("error");
+            }
+        });
+    }
+    </script>
+
+
+</body>
 </html>

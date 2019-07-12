@@ -1,118 +1,50 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>一份试卷</title>
-    <style>
-        body {
-            margin: 0px;
-            padding: 0px;
-        }
-        .div_all {
-            width: 100%;
-            height: 100%;
-            min-width: 1200px;
-            margin-bottom: 50px;
-        }
-        .div_all_title {
-            width: 100%;
-            height: 60px;
-            text-align: center;
-            line-height: 60px;
-            font-size: 26px;
-            font-weight: bold;
-        }
-        .div_all_ke {
-            width: 80%;
-            height: 40px;
-            margin-left: 10%;
-            border: 1px solid #999999;
-            line-height: 40px;
-            font-weight: bold;
-            font-size: 14px;
-            margin-top: 10px;
-        }
-        .div_all_selected, .div_all_more, .div_all_input {
-            width: 80%;
-            margin-left: 10%;
-        }
-        .div_radio div {
-            height: 30px;
-        }
-        .div_all_top {
-            width: 100%;
-            min-width: 1200px;
-            position: fixed;
-            top: 0px;
-            background-color: #FFFFFF;
-        }
-        .div_span_submit {
-            margin-left: 5%;
-            color: #ff0000;
-            font-weight: bold;
-            border: 1px solid #ff0000;
-            padding: 1px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        .div_span_submit:hover {
-            background-color: #d43c3c;
-            color: #FFFFFF;
-        }
-        .div_input_text_area textarea {
-            width: 100%;
-            height: 50px;
-            resize: none;
-        }
-        .div_buttom {
-            width: 91%;
-            margin-left: 4.5%;
-            height: 30px;
-            background-color: #222222;
-            position: fixed;
-            bottom: 0px;
-            border: 1px solid #999999;
-            min-width: 1240px;
-        }
-        .div_buttom div {
-            float: left;
-        }
-        .div_mei_span {
-            width: 20px;
-            height: 20px;
-            border: 1px solid #FFFFFF;
-            font-size: 6px;
-            text-align: center;
-            line-height: 20px;
-            margin-left: 5px;
-            margin-top: 5px;
-            float: left;
-            cursor: pointer;
-            color: #FFFFFF;
-        }
-        .div_mei_span_yes {
-            width: 20px;
-            height: 20px;
-            border: 1px solid #FFFFFF;
-            background-color: #FFFFFF;
-            font-size: 6px;
-            text-align: center;
-            line-height: 20px;
-            margin-left: 5px;
-            margin-top: 5px;
-            float: left;
-            cursor: pointer;
-            color: #222222;
-        }
-    </style>
-    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js">
-    </script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--    <link rel="icon" href="../../favicon.ico">-->
+
+    <title>制作新题</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
-<div class="div_all">
-    <div class="div_all_top">
-        <!--    试卷头部-->
+
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">制作新题</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="home">主页</a></li>
+                <li><a href="contact_us.html" target="_blank">联系我们</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<ul>
+    <br>
+</ul>
+<!-- Begin page content -->
+<div class="container">
+    <div class="page-header">
+        <!--        <h1>Sticky footer with fixed navbar</h1>-->
         <div class="div_all_title">2019年7月8日信息检索模拟测试【出题人：咸博文】</div>
         <div class="div_all_ke">
             <span style="margin-left: 10%">科目：数据库</span>
@@ -133,38 +65,59 @@
         <!--    试卷题目-->
         <br>
         <div style="margin-left: 160px">
-        <p id="1">这是一个题干</p>
-        <!--          name相同则选项互斥，可以用题目id来作为name-->
-        <label><input class="1" type="radio" name="radio1" value="0"/>选项1</label>
-        <label><input class="1" type="radio" name="radio1" value="3"/>选项2</label>
-        <label><input class="1" type="radio" name="radio1" value="1"/>选项3</label>
-        <label><input class="1" type="radio" name="radio1" value="1"/>选项4</label>
+            <div th:each="problem:${problems}">
+                <p th:text="${problem.content}"></p>
+                <input type="radio" th:text="${problem.options[0]}"><br>
+                <input type="radio" th:text="${problem.options[1]}"><br>
+                <input type="radio" th:text="${problem.options[2]}"><br>
+                <input type="radio" th:text="${problem.options[3]}"><br>
+                <br>
+                <br>
+                <br>
+            </div>
         </div>
     </div>
+    <!--      <p class="lead">Pin a fixed-height footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS. A fixed navbar has been added with <code>padding-top: 60px;</code> on the <code>body &gt; .container</code>.</p>-->
+    <!--      <p>Back to <a href="../sticky-footer">the default sticky footer</a> minus the navbar.</p>-->
 </div>
-    <script>
-        function showProblems() {
-            var url = "/teacher/problems";
-            var data = JSON.stringify(null);
-            for (var i=0; i<4; i++) {
-                $.ajax({
-                    data:data,
-                    type:"POST",
-                    contentType:"application/json",
-                    url:url,
-                    success:function (retData) {
-                        var retmsg = JSON.parse(retData);
-                        var content = retmsg.content;
-                        document.getElementById("i").innerHTML = content;
-                        for (var j=0; j<4; j++) {
-                            var options = retmsg.options;
-                            //选项
-                        }
-                    }
-                })
+
+<script type="text/javascript">
+    function deleteTest() {
+        var test_id = parseInt($('#test_id').val());
+
+        data = {
+            "test_id":test_id
+        };
+        alert(JSON.stringify(data));
+        $.ajax({
+            url:'/teacher/test',
+            data:JSON.stringify(data),
+            type:'DELETE',
+            contentType:'application/json',
+            success: function(retData) {
+                alert("success");
+            },
+            error: function(retMsg) {
+                alert("error");
             }
-        }
-    </script>
-    <script src="../static/jquery-3.4.1.min.js"></script>
+        });
+    }
+</script>
+
+<!--    <footer class="footer">-->
+<!--      <div class="container">-->
+<!--        <p class="text-muted">Place sticky footer content here.</p>-->
+<!--      </div>-->
+<!--    </footer>-->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../static/jquery-3.4.1.min.js"></script>
+<!--    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>-->
+<!--    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+<!--    &lt;!&ndash; IE10 viewport hack for Surface/desktop Windows 8 bug &ndash;&gt;-->
+<!--    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>-->
 </body>
 </html>
